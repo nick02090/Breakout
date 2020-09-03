@@ -2,11 +2,17 @@
 //
 
 #include <iostream>
-
+#include "Game.h"
 
 int main(int argc, char* args[])
 {
     std::cout << "Starting your game..." << std::endl;
+
+    Game* game = new Game();
+    game->start();
+
+    std::cout << "Thank you for playing!" << std::endl;
+
     return 0;
 }
 
