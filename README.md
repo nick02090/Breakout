@@ -5,7 +5,7 @@ My implementation of an arcade game Breakout.
 - **Visual Studio**
 - **SDL**
   - [Setup guide for VS] https://stackoverflow.com/questions/57732058/how-do-i-link-sdl-with-visual-studio-2019
-  - [NOTE] SDL2_image also required
+  - [NOTE] SDL_image and SDL_ttf also required
 - **Allegro**
   - [Setup guide for VS] Install as a Nuget package (if not installed automatically)
 - **TinyXML**
