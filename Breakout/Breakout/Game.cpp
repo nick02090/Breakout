@@ -74,8 +74,13 @@ void Game::end()
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
 
+	// Free font
+	TTF_CloseFont(font);
+	font = NULL;
+
 	// Quit SDL subsystems
 	IMG_Quit();
+	TTF_Quit();
 	SDL_Quit();
 }
 
@@ -125,6 +130,13 @@ bool Game::initSDL()
 				if (!(IMG_Init(imgFlags) & imgFlags))
 				{
 					std::cout << "SDL_image could not be initialized! SDL_Error: " << IMG_GetError() << std::endl;
+					success = false;
+				}
+
+				//Initialize SDL_ttf
+				if (TTF_Init() == -1)
+				{
+					std::cout << "SDL_ttf could not be initiliazed! SDL_Error: " << TTF_GetError() << std::endl;
 					success = false;
 				}
 			}

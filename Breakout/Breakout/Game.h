@@ -1,4 +1,5 @@
 #pragma once
+#include <SDL_ttf.h>
 class SDL_Window;
 class SDL_Renderer;
 
@@ -31,9 +32,10 @@ private:
 	/// </summary>
 	void end();
 
-	int screenWidth = 640;
-	int screenHeight = 480;
+	int screenWidth = 1024;
+	int screenHeight = 768;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	TTF_Font* font;
 	GameState gameState;
 };
