@@ -69,18 +69,13 @@ void MainMenuGameScene::update()
 	}
 }
 
-bool MainMenuGameScene::handleInput(SDL_Event* e)
+void MainMenuGameScene::handleInput(SDL_Event* e)
 {
 	// Handle events on the queue
 	while (SDL_PollEvent(e) != 0)
 	{
-		// User request quit
-		if (e->type == SDL_QUIT)
-		{
-			return true;
-		}
 		// User presses a key
-		else if (e->type == SDL_KEYDOWN)
+		if (e->type == SDL_KEYDOWN)
 		{
 			switch (e->key.keysym.sym)
 			{
@@ -107,8 +102,6 @@ bool MainMenuGameScene::handleInput(SDL_Event* e)
 			}
 		}
 	}
-
-	return false;
 }
 
 bool MainMenuGameScene::loadMedia()
@@ -252,23 +245,24 @@ void MainMenuGameScene::updateCurrentState()
 		// User selected to quit the game
 		else if (selectedButtonIndex == 1)
 		{
-			// TODO: Implement game quitting
+			shouldQuit = true;
 		}
 		break;
 	case MainMenuGameScene::MainMenuState::SECOND_MENU:
 		// User selected to play the STORY mode
 		if (selectedButtonIndex == 2)
 		{
-			// TODO: Implement scene switch
+			nextGameState = GameState::STORY;
 		}
-		// 
+		// User selected to play the ARCADE mode
 		else if (selectedButtonIndex == 3)
 		{
-			// TODO: Implement scene switch
+			nextGameState = GameState::ARCADE;
 		}
+		// User selected to play the CO-OP mode
 		else if (selectedButtonIndex == 4)
 		{
-			// TODO: Implement scene switch
+			nextGameState = GameState::COOP;
 		}
 		break;
 	default:

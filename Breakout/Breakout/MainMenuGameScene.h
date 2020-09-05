@@ -43,7 +43,7 @@ public:
 		font = NULL;
 	}
 	void update();
-	bool handleInput(SDL_Event* e);
+	void handleInput(SDL_Event* e);
 	bool loadMedia();
 private:
 	/// <summary>

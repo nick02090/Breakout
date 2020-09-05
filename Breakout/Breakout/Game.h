@@ -2,20 +2,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "GameScene.h"
-
 class Game
 {
 public:
-
-	enum class GameState
-	{
-		PLAYING_LEVEL,
-		PAUSED_LEVEL,
-		MAIN_MENU,
-		WIN_LEVEL,
-		LOSE_LEVEL
-	};
-
 	/// <summary>
 	/// Initialize game and prepare everything for running.
 	/// </summary>
@@ -35,7 +24,7 @@ private:
 	/// </summary>
 	void end();
 	/// <summary>
-	/// Initializes a new scene based on a gameState.
+	/// Initializes a new scene based on a gameState and loads its media.
 	/// </summary>
 	void initScene();
 

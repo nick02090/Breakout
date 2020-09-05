@@ -14,11 +14,8 @@ Game::Game()
 		// Initialize startup scene (MainMenu)
 		gameState = GameState::MAIN_MENU;
 		initScene();
-		// Load necessary media assets for the scene
-		if (!gameScene->loadMedia()) 
-		{
-			std::cout << "Failed to load media!" << std::endl;
-		}
+		// Hide cursor
+		SDL_ShowCursor(SDL_DISABLE);
 	}
 }
 
@@ -35,7 +32,15 @@ void Game::start()
 	while (!quit)
 	{
 		// Handle input for the current scene
-		quit = gameScene->handleInput(&e);
+		gameScene->handleInput(&e);
+		quit = gameScene->hasRequestedToQuit();
+		// Change scene if it was requested
+		if (gameScene->hasRequestNextGameState())
+		{
+			// Get next scene and initialize it
+			gameState = gameScene->getNextGameState();
+			initScene();
+		}
 
 		// Clear the screen
 		SDL_RenderClear(renderer);
@@ -128,20 +133,30 @@ bool Game::initSDL()
 
 void Game::initScene()
 {
+	delete gameScene;
+
 	switch (gameState)
 	{
 	case GameState::MAIN_MENU:
 		gameScene = new MainMenuGameScene(renderer);
 		break;
-	case GameState::LOSE_LEVEL:
+	case GameState::STORY:
+		// TODO: Implement StoryGameScene
 		break;
-	case GameState::PAUSED_LEVEL:
+	case GameState::ARCADE:
+		// TODO: Implement ArcadeGameScene
 		break;
-	case GameState::PLAYING_LEVEL:
-		break;
-	case GameState::WIN_LEVEL:
+	case GameState::COOP:
+		// TODO: Implement COOPGameScene
 		break;
 	default:
+		std::cout << "Invalid game state!" << std::endl;
 		break;
+	}
+
+	// Load necessary media assets for the new scene
+	if (!gameScene->loadMedia())
+	{
+		std::cout << "Failed to load media!" << std::endl;
 	}
 }
