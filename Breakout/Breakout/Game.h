@@ -1,7 +1,8 @@
 #pragma once
-#include <SDL.h>
-#include <SDL_image.h>
-#include "GameScene.h"
+class SDL_Window;
+class SDL_Renderer;
+class GameScene;
+enum class GameState;
 class Game
 {
 public:

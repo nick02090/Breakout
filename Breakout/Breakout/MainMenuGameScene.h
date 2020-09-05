@@ -47,19 +47,6 @@ public:
 	bool loadMedia();
 private:
 	/// <summary>
-	/// Draws button on the screen.
-	/// </summary>
-	/// <param name="texture">Button texture</param>
-	/// <param name="position">Button position on the screen</param>
-	void drawButton(SDL_Texture* texture, Position position);
-	/// <summary>
-	/// Draws a text on the screen.
-	/// </summary>
-	/// <param name="color">Color of the text</param>
-	/// <param name="message">Message of the text</param>
-	/// <param name="position">Text position on the screen</param>
-	void drawText(SDL_Color color, const char* message, Position position);
-	/// <summary>
 	/// Gets color for the text based on the button that is placed on.
 	/// </summary>
 	/// <param name="buttonPosition">Position of the button that text is placed on</param>

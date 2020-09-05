@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <iostream>
 #include "MainMenuGameScene.h"
 #include "StoryGameScene.h"
 #include "ArcadeGameScene.h"

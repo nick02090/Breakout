@@ -98,5 +98,8 @@
     <ClInclude Include="COOPGameScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StoryChapter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

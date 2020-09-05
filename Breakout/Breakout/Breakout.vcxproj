@@ -170,6 +170,7 @@
     <ClInclude Include="Level.h" />
     <ClInclude Include="MainMenuGameScene.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="StoryChapter.h" />
     <ClInclude Include="StoryGameScene.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Utilities.h" />
