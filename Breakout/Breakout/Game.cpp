@@ -1,6 +1,9 @@
 #include "Game.h"
 #include <iostream>
 #include "MainMenuGameScene.h"
+#include "StoryGameScene.h"
+#include "ArcadeGameScene.h"
+#include "COOPGameScene.h"
 
 Game::Game() 
 {
@@ -141,13 +144,13 @@ void Game::initScene()
 		gameScene = new MainMenuGameScene(renderer);
 		break;
 	case GameState::STORY:
-		// TODO: Implement StoryGameScene
+		gameScene = new StoryGameScene(renderer);
 		break;
 	case GameState::ARCADE:
-		// TODO: Implement ArcadeGameScene
+		gameScene = new ArcadeGameScene(renderer);
 		break;
 	case GameState::COOP:
-		// TODO: Implement COOPGameScene
+		gameScene = new COOPGameScene(renderer);
 		break;
 	default:
 		std::cout << "Invalid game state!" << std::endl;
