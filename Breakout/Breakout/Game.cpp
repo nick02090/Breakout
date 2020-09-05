@@ -61,10 +61,6 @@ void Game::end()
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
 
-	// Free font
-	TTF_CloseFont(font);
-	font = NULL;
-
 	// Destroy GameScene
 	delete gameScene;
 

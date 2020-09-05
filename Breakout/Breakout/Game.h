@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL.h>
 #include <SDL_image.h>
-#include <SDL_ttf.h>
 #include "GameScene.h"
 
 class Game
@@ -44,7 +43,6 @@ private:
 	int screenHeight = 768;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	TTF_Font* font;
 	GameState gameState;
 	GameScene* gameScene;
 };
