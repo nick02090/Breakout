@@ -14,8 +14,8 @@ public:
 	{
 		// Initialize member variables
 		mainMenuState = MainMenuState::FIRST_MENU;
-		selectedButtonPosition = PLAY_BUTTON_POSITION;
-		previousStateButtonPosition = { -1, -1 };
+		previousStateButtonIndex = -1;
+		selectedButtonIndex = 0;
 
 		// Initialize textures
 		backgroundTexture = NULL;
@@ -59,10 +59,24 @@ private:
 	/// <param name="message">Message of the text</param>
 	/// <param name="position">Text position on the screen</param>
 	void drawText(SDL_Color color, const char* message, Position position);
+	/// <summary>
+	/// Gets color for the text based on the button that is placed on.
+	/// </summary>
+	/// <param name="buttonPosition">Position of the button that text is placed on</param>
+	/// <returns></returns>
 	SDL_Color getTextColor(Position buttonPosition);
+	/// <summary>
+	/// Update current selected button by increasing/decreasing the index by the offset.
+	/// </summary>
+	/// <param name="offset">Offset by which is the index updated</param>
+	void updateCurrentButton(int offset);
+	/// <summary>
+	/// Updates current MainMenu state.
+	/// </summary>
+	void updateCurrentState();
 
-	const Position PLAY_BUTTON_POSITION = { 100, 250 };
-	const Position QUIT_BUTTON_POSITION = { 100, 450 };
+	const Position PLAY_BUTTON_POSITION = { 110, 250 };
+	const Position QUIT_BUTTON_POSITION = { 110, 450 };
 	const Position STORY_BUTTON_POSITION = { 550, 250 };
 	const Position ARCADE_BUTTON_POSITION = { 550, 370 };
 	const Position COOP_BUTTON_POSITION = { 550, 490 };
@@ -74,8 +88,10 @@ private:
 	const Position COOP_TEXT_POSITION = { 620, 510 };
 
 	MainMenuState mainMenuState;
-	Position selectedButtonPosition;
-	Position previousStateButtonPosition;
+	int previousStateButtonIndex;
+	int selectedButtonIndex;
+	Position buttonPositions[5] = {PLAY_BUTTON_POSITION, QUIT_BUTTON_POSITION, STORY_BUTTON_POSITION, 
+		ARCADE_BUTTON_POSITION, COOP_BUTTON_POSITION};
 
 	SDL_Texture* backgroundTexture;
 	SDL_Texture* blackButtonTexture;

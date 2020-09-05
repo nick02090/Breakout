@@ -34,12 +34,12 @@ void MainMenuGameScene::update()
 	}
 
 	// Add extra layer to selected button
-	drawButton(whiteButtonTexture, selectedButtonPosition);
+	drawButton(whiteButtonTexture, buttonPositions[selectedButtonIndex]);
 
 	// Add extra layer to previous state selected button if there is one
-	if (isValidPosition(previousStateButtonPosition))
+	if (previousStateButtonIndex >= 0)
 	{
-		drawButton(orangeButtonTexture, previousStateButtonPosition);
+		drawButton(orangeButtonTexture, buttonPositions[previousStateButtonIndex]);
 	}
 
 	// Add text to buttons
@@ -84,6 +84,24 @@ bool MainMenuGameScene::handleInput(SDL_Event* e)
 		{
 			switch (e->key.keysym.sym)
 			{
+			// Up arrow key
+			case SDLK_UP:
+				updateCurrentButton(-1);
+				break;
+			// Down arrow key
+			case SDLK_DOWN:
+				updateCurrentButton(1);
+				break;
+			// Enter key
+			case SDLK_RETURN:
+				updateCurrentState();
+				break;
+			// Backspace key
+			case SDLK_BACKSPACE:
+				mainMenuState = MainMenuState::FIRST_MENU;
+				selectedButtonIndex = 0;
+				previousStateButtonIndex = -1;
+				break;
 			default:
 				break;
 			}
@@ -179,6 +197,9 @@ void MainMenuGameScene::drawText(SDL_Color color, const char* message, Position 
 
 SDL_Color MainMenuGameScene::getTextColor(Position buttonPosition)
 {
+	Position selectedButtonPosition = buttonPositions[selectedButtonIndex];
+	Position previousStateButtonPosition = buttonPositions[previousStateButtonIndex];
+
 	// If the button position is the same as the currently selected button position return black color
 	if (selectedButtonPosition.x == buttonPosition.x && selectedButtonPosition.y == buttonPosition.y)
 	{
@@ -195,5 +216,63 @@ SDL_Color MainMenuGameScene::getTextColor(Position buttonPosition)
 	{
 		SDL_Color whiteColor = { 250, 250, 250 };
 		return whiteColor;
+	}
+}
+
+void MainMenuGameScene::updateCurrentButton(int offset)
+{
+	switch (mainMenuState)
+	{
+	case MainMenuGameScene::MainMenuState::FIRST_MENU:
+		// Clamp the selected button index to indexes of a first menu state
+		selectedButtonIndex = util::clamp(selectedButtonIndex + offset, 0, 1);
+		break;
+	case MainMenuGameScene::MainMenuState::SECOND_MENU:
+		// Clamp the selected button index to indexes of a second menu state
+		selectedButtonIndex = util::clamp(selectedButtonIndex + offset, 2, 4);
+		break;
+	default:
+		std::cout << "Invalid MainMenuState!" << std::endl;
+		break;
+	}
+}
+
+void MainMenuGameScene::updateCurrentState()
+{
+	switch (mainMenuState)
+	{
+	case MainMenuGameScene::MainMenuState::FIRST_MENU:
+		// User selected to play the game
+		if (selectedButtonIndex == 0)
+		{
+			previousStateButtonIndex = 0;
+			selectedButtonIndex = 2;
+			mainMenuState = MainMenuState::SECOND_MENU;
+		}
+		// User selected to quit the game
+		else if (selectedButtonIndex == 1)
+		{
+			// TODO: Implement game quitting
+		}
+		break;
+	case MainMenuGameScene::MainMenuState::SECOND_MENU:
+		// User selected to play the STORY mode
+		if (selectedButtonIndex == 2)
+		{
+			// TODO: Implement scene switch
+		}
+		// 
+		else if (selectedButtonIndex == 3)
+		{
+			// TODO: Implement scene switch
+		}
+		else if (selectedButtonIndex == 4)
+		{
+			// TODO: Implement scene switch
+		}
+		break;
+	default:
+		std::cout << "Invalid MainMenuState!" << std::endl;
+		break;
 	}
 }
