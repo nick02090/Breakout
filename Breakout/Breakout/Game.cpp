@@ -1,21 +1,24 @@
 #include "Game.h"
 #include <iostream>
-#include <SDL.h>
-#include <SDL_image.h>
+#include "MainMenuGameScene.h"
 
 Game::Game() 
 {
-	// Setup member variables.
-	gameState = GameState::MAIN_MENU;
 	// Start up SDL and create a window.
 	if (!initSDL()) 
 	{
 		std::cout << "Failed to initialize SDL!" << std::endl;
-	}
+	} 
 	else
 	{
-		// Load media
-		// TODO: Needs to be implemented (load every asset at the beggining of the game)
+		// Initialize startup scene (MainMenu)
+		gameState = GameState::MAIN_MENU;
+		initScene();
+		// Load necessary media assets for the scene
+		if (!gameScene->loadMedia()) 
+		{
+			std::cout << "Failed to load media!" << std::endl;
+		}
 	}
 }
 
@@ -31,34 +34,18 @@ void Game::start()
 	// While application is running
 	while (!quit)
 	{
-		// Handle events on the queue
-		while (SDL_PollEvent(&e) != 0)
-		{
-			// User request quit
-			if (e.type == SDL_QUIT)
-			{
-				quit = true;
-			}
-			// User presses a key
-			else if (e.type == SDL_KEYDOWN)
-			{
-				switch (e.key.keysym.sym)
-				{
-				default:
-					break;
-				}
-			}
-		}
+		// Handle input for the current scene
+		quit = gameScene->handleInput(&e);
 
 		// Clear the screen
 		SDL_RenderClear(renderer);
 
-		// Render texture to screen
+		// Render screen for the current scene
+		gameScene->update();
 
 		// Update the screen
 		SDL_RenderPresent(renderer);
 	}
-
 
 	// Free resources and close SDL
 	end();
@@ -78,16 +65,13 @@ void Game::end()
 	TTF_CloseFont(font);
 	font = NULL;
 
+	// Destroy GameScene
+	delete gameScene;
+
 	// Quit SDL subsystems
 	IMG_Quit();
 	TTF_Quit();
 	SDL_Quit();
-}
-
-void Game::update()
-{
-	// TODO: Needs to be implemented
-	// Handle input
 }
 
 bool Game::initSDL()
@@ -144,4 +128,24 @@ bool Game::initSDL()
 	}
 
 	return success;
+}
+
+void Game::initScene()
+{
+	switch (gameState)
+	{
+	case GameState::MAIN_MENU:
+		gameScene = new MainMenuGameScene(renderer);
+		break;
+	case GameState::LOSE_LEVEL:
+		break;
+	case GameState::PAUSED_LEVEL:
+		break;
+	case GameState::PLAYING_LEVEL:
+		break;
+	case GameState::WIN_LEVEL:
+		break;
+	default:
+		break;
+	}
 }

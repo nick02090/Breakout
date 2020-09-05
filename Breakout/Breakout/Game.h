@@ -1,7 +1,8 @@
 #pragma once
+#include <SDL.h>
+#include <SDL_image.h>
 #include <SDL_ttf.h>
-class SDL_Window;
-class SDL_Renderer;
+#include "GameScene.h"
 
 class Game
 {
@@ -24,13 +25,20 @@ public:
 	/// Run game loop and display startup Main Menu.
 	/// </summary>
 	void start();
-	void update();
 private:
+	/// <summary>
+	/// Initialize SDL and all of it's subsystems.
+	/// </summary>
+	/// <returns></returns>
 	bool initSDL();
 	/// <summary>
 	/// Frees media and shuts down SDL.
 	/// </summary>
 	void end();
+	/// <summary>
+	/// Initializes a new scene based on a gameState.
+	/// </summary>
+	void initScene();
 
 	int screenWidth = 1024;
 	int screenHeight = 768;
@@ -38,4 +46,5 @@ private:
 	SDL_Renderer* renderer;
 	TTF_Font* font;
 	GameState gameState;
+	GameScene* gameScene;
 };
