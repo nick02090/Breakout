@@ -1,9 +1,7 @@
 #pragma once
-namespace tinyxml2 
-{
-	class XMLDocument;
-}
-class SDL_Texture;
+#include <iostream>
+#include <vector>
+#include "Brick.h"
 namespace util
 {
 	class Array2D;
@@ -12,7 +10,7 @@ namespace util
 class Level
 {
 public:
-	Level(tinyxml2::XMLDocument xmlDocument);
+	Level(std::string path);
 	void load();
 	void play();
 	void pause();
@@ -21,7 +19,9 @@ private:
 	int columnCount;
 	int rowSpacing;
 	int columnSpacing;
-	SDL_Texture* backgroundTexture;
-	util::Array2D* bricksLayout;
+	std::string backgroundTexturePath;
+	std::vector<std::vector<std::string>> bricksLayout;
+
+	std::vector<Brick*> bricks;
 };
 

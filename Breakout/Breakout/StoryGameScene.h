@@ -33,8 +33,12 @@ public:
 		firstChapter = new StoryChapter(FIRST_CHAPTER_PATH);
 		secondChapter = new StoryChapter(SECOND_CHAPTER_PATH);
 		thirdChapter = new StoryChapter(THIRD_CHAPTER_PATH);
-		currentChapter = firstChapter;
+		chapters[0] = firstChapter;
+		chapters[1] = secondChapter;
+		chapters[2] = thirdChapter;
+		StoryChapter* currentChapter = chapters[currentChapterIndex];
 		currentChapterLine = currentChapter->getNextLine();
+		currentLevel = NULL;
 
 		// Initialize font
 		font = NULL;
@@ -77,9 +81,12 @@ private:
 	StoryChapter* firstChapter;
 	StoryChapter* secondChapter;
 	StoryChapter* thirdChapter;
+	StoryChapter* chapters[3];
 
-	StoryChapter* currentChapter;
+	int currentChapterIndex = 0;
 	std::string currentChapterLine;
+
+	Level* currentLevel;
 
 	TTF_Font* font;
 };

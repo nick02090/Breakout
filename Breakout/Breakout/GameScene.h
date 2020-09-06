@@ -4,6 +4,7 @@
 #include <SDL_ttf.h>
 #include <iostream>
 #include "Utilities.h"
+#include "Level.h"
 
 enum class GameState
 {

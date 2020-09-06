@@ -97,14 +97,20 @@ void StoryGameScene::narrationHandleInput(SDL_Event* e)
 			switch (e->key.keysym.sym)
 			{
 			case SDLK_RETURN:
-				currentChapterLine = currentChapter->getNextLine();
+				currentChapterLine = chapters[currentChapterIndex]->getNextLine();
 				if (currentChapterLine._Equal("PLAY"))
 				{
-					// TODO: Play the level
+					storyState = StoryState::PLAY;
+					currentLevel = new Level(chapters[currentChapterIndex]->getPathToLevel());
 				}
 				else if (currentChapterLine._Equal("END"))
 				{
-					// TODO: Change to the next chapter
+					currentChapterIndex += 1;
+					if (currentChapterIndex == 3)
+					{
+						// Finished all of the chapters, return to the MainMenu
+						nextGameState = GameState::MAIN_MENU;
+					}
 				}
 				break;
 			default:
@@ -163,7 +169,7 @@ void StoryGameScene::narrationUpdate()
 
 	// Draw title
 	SDL_Color white = {250, 250, 250};
-	drawText(font, white, currentChapter->getTitle().c_str(), {screenWidth/10, screenHeight/10}, HEADING_FONT_SIZE);
+	drawText(font, white, chapters[currentChapterIndex]->getTitle().c_str(), {screenWidth/10, screenHeight/10}, HEADING_FONT_SIZE);
 
 	// Draw text
 	drawText(font, white, currentChapterLine.c_str(), {screenWidth/10, screenHeight/2}, PARAGRAPH_FONT_SIZE);
@@ -176,8 +182,19 @@ void StoryGameScene::narrationUpdate()
 
 void StoryGameScene::playUpdate()
 {
+	// Render background texture to screen
+
+	// Play the level
 }
 
 void StoryGameScene::pauseUpdate()
 {
+	// Pause everything
+
+	// Dim the current screen
+
+	// Draw text
+	// "PAUSED"
+	// continue
+	//  quit
 }
