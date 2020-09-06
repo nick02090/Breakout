@@ -56,6 +56,21 @@ void Game::start()
 
 		// Update the screen
 		SDL_RenderPresent(renderer);
+
+		// Calculate FPS
+		fps++;
+		currentTime = SDL_GetTicks();
+		int diff = currentTime - previousTime;
+		if (diff > 1000)
+		{
+			previousTime = currentTime;
+			fpsPrint = fps;
+			fps = 0;
+		}
+		if (showFps)
+		{
+			std::cout << "FPS: " << fpsPrint << std::endl;
+		}
 	}
 
 	// Free resources and close SDL

@@ -30,6 +30,9 @@ public:
 
 		// Render the texture on the screen
 		SDL_RenderCopy(renderer, texture, NULL, &rect);
+
+		// Update velocity
+		velocity = util::clamp(velocity - 1, MIN_VELOCITY, MAX_VELOCITY);
 	}
 	/// <summary>
 	/// Add points to the player score.
@@ -70,6 +73,27 @@ public:
 	{
 		return currentLives == 0;
 	}
+	inline void turnOffAcceleration()
+	{
+		acceleration = 0;
+	}
+	inline void increaseAcceleration(bool isNegative)
+	{
+		if (isNegative)
+		{
+			velocityMultiplier = -1;
+		} 
+		else 
+		{
+			velocityMultiplier = 1;
+		}
+		acceleration++;
+	}
+	inline int getVelocity()
+	{
+		velocity = util::clamp(velocity + acceleration, MIN_VELOCITY, MAX_VELOCITY);
+		return velocity * velocityMultiplier;
+	}
 private:
 	const std::string TEXTURE_PATH = "GameObjects/Player.png";
 	const int MAX_LIVES = 3;
@@ -81,5 +105,11 @@ private:
 
 	int currentLives;
 	int currentScore;
+
+	const int MIN_VELOCITY = 5;
+	const int MAX_VELOCITY = 20;
+	int acceleration = 0;
+	int velocity = MIN_VELOCITY;
+	int velocityMultiplier = -1;
 };
 

@@ -35,4 +35,10 @@ private:
 	SDL_Renderer* renderer;
 	GameState gameState;
 	GameScene* gameScene;
+
+	bool showFps = false;
+	int fps = 0;
+	int fpsPrint = 0;
+	int previousTime = 0;
+	int currentTime = 0;
 };

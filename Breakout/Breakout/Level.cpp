@@ -219,6 +219,29 @@ void Level::handleInput(SDL_Event* e)
 			case SDLK_ESCAPE:
 				levelState = LevelState::PAUSED;
 				break;
+			case SDLK_LEFT:
+				player->increaseAcceleration(true);
+				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0, 1024-100);
+				break;
+			case SDLK_RIGHT:
+				player->increaseAcceleration(false);
+				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0, 1024 - 100);
+				break;
+			default:
+				break;
+			}
+		}
+		// User releases a key
+		if (e->type == SDL_KEYUP)
+		{
+			switch (e->key.keysym.sym)
+			{
+			case SDLK_LEFT:
+				player->turnOffAcceleration();
+				break;
+			case SDLK_RIGHT:
+				player->turnOffAcceleration();
+				break;
 			default:
 				break;
 			}
