@@ -1,10 +1,11 @@
 #include "Level.h"
 
-Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player)
+Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::string _name)
 {
 	renderer = _renderer;
 	player = _player;
 	ball = new Ball(renderer);
+	name = _name;
 
 	// Initialize member variables via xmlDocument
 	tinyxml2::XMLDocument doc;
@@ -57,6 +58,12 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player)
 			brickElement = nameComment->NextSiblingElement();
 		}
 
+		// Calculate bricks screen factors
+		int neededBrickWidth = columnCount * BRICK_WIDHT + (columnCount - 1) * rowSpacing;
+		int neededBrickHeight = rowCount * BRICK_HEIGHT + (rowCount - 1) * columnSpacing;
+		bricksWidthFactor = (float)neededBrickWidth / (float)MAX_BRICKS_WIDTH;
+		bricksHeightFactor = (float)neededBrickHeight / (float)MAX_BRICKS_HEIGHT;
+
 		// Get Bricks node and it'a attributes
 		tinyxml2::XMLElement* bricksElement = brickTypesElement->NextSiblingElement();
 		std::string text = bricksElement->GetText();
@@ -72,7 +79,26 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player)
 			}
 			if (lineResult.size() > 0)
 			{
-				bricksLayout.push_back(lineResult);
+				int row = static_cast<int>(bricksLayout.size());
+				std::vector<Brick*> bricksRow;
+				std::vector<util::Position> bricksRowPositions;
+				for (std::string id : lineResult)
+				{
+					for (Brick* brick : bricks)
+					{
+						if (brick->getID()._Equal(id))
+						{
+							int col = static_cast<int>(bricksRow.size());
+							int x = static_cast<int>(firstBrickPosition.x + col * (50.0 + columnSpacing) / bricksWidthFactor);
+							int y = static_cast<int>(firstBrickPosition.y + row * (20.0 + rowSpacing) / bricksHeightFactor);
+							bricksRow.push_back(new Brick(brick));
+							bricksRowPositions.push_back({x, y});
+							break;
+						}
+					}
+				}
+				bricksPositions.push_back(bricksRowPositions);
+				bricksLayout.push_back(bricksRow);
 			}
 		}
 	}
@@ -121,7 +147,7 @@ bool Level::loadMedia()
 	}
 
 	// Load the font
-	font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HEADING_FONT_SIZE);
+	font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", 48);
 	if (font == NULL)
 	{
 		std::cout << "Failed to load font! SDL_Error: " << TTF_GetError() << std::endl;
@@ -138,6 +164,42 @@ void Level::update()
 
 	// Render HUD texture to screen
 	SDL_RenderCopy(renderer, HUDTexture, NULL, NULL);
+	
+	// Draw level name on the HUD
+	SDL_Color white = { 250, 250, 250 };
+	util::Position namePosition = { 484 - static_cast<int>(name.size()) * 12, 688 };
+	util::drawText(renderer, font, white, name.c_str(), namePosition, util::PARAGRAPH_FONT_SIZE);
+
+	// Draw player score on the HUD
+	SDL_Color cyan = { 0, 255, 225 };
+	util::Position scorePosition = { 96, 735 };
+	util::drawText(renderer, font, cyan, std::to_string(player->getCurrentScore()).c_str(), scorePosition, util::PARAGRAPH_FONT_SIZE);
+
+	// Draw player lives on the HUD
+	SDL_Color red = { 255, 0, 84 };
+	util::Position livesPosition = { 990, 735 };
+	util::drawText(renderer, font, red, std::to_string(player->getCurrentLives()).c_str(), livesPosition, util::PARAGRAPH_FONT_SIZE);
+
+	// Draw the player
+	player->render(currentPlayerPosition);
+
+	// Draw the ball
+	ball->render(currentBallPosition);
+
+	// Draw bricks
+	for (int row = 0; row < static_cast<int>(bricksLayout.size()); row++)
+	{
+		for (int col = 0; col < static_cast<int>(bricksLayout.at(row).size()); col++)
+		{
+			Brick* brick = bricksLayout.at(row).at(col);
+			if (brick->getIsCrushed())
+			{
+				continue;
+			}
+			util::Position brickPosition = bricksPositions.at(row).at(col);
+			brick->render(brickPosition, bricksWidthFactor, bricksHeightFactor);
+		}
+	}
 }
 
 void Level::handleInput(SDL_Event* e)

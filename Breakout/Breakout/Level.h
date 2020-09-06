@@ -24,7 +24,7 @@ public:
 		MAINMENU
 	};
 
-	Level(std::string path, SDL_Renderer* _renderer, Player* _player);
+	Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::string _name);
 	~Level()
 	{
 		// Free loaded images
@@ -70,17 +70,31 @@ public:
 	}
 private:
 	const std::string HUDTexturePath = "Textures/LevelHUD.png";
+	
+	const int MAX_BRICKS_WIDTH = 994;
+	const int MAX_BRICKS_HEIGHT = 600;
+	const int BRICK_HEIGHT = 20;
+	const int BRICK_WIDHT = 50;
+	float bricksWidthFactor;
+	float bricksHeightFactor;
 
 	int rowCount;
 	int columnCount;
 	int rowSpacing;
 	int columnSpacing;
 	std::string backgroundTexturePath;
-	std::vector<std::vector<std::string>> bricksLayout;
+	std::vector<std::vector<Brick*>> bricksLayout;
 	std::vector<Brick*> bricks;
 
 	Player* player;
 	Ball* ball;
+
+	util::Position currentPlayerPosition = {445, 648};
+	util::Position currentBallPosition = {485, 618};
+	util::Position firstBrickPosition = {15, 15};
+	std::vector<std::vector<util::Position>> bricksPositions;
+
+	std::string name;
 
 	LevelState levelState = LevelState::PLAYING;
 

@@ -16,7 +16,9 @@ public:
 	/// Renders an object on the screen by creating a copy of the object.
 	/// </summary>
 	/// <param name="screenPosition">Position on the screen that object is placed to</param>
-	virtual void render(util::Position screenPosition) = 0;
+	/// <param name="widthFactor">Width scaling factor that scales down objects width</param>
+	/// <param name="heightFactor">Height scaling factor that scales down objects height</param>
+	virtual void render(util::Position screenPosition, float widthFactor = 1.0, float heightFactor = 1.0) = 0;
 	/// <summary>
 	/// Determines whether the object is colliding with an other object.
 	/// </summary>
