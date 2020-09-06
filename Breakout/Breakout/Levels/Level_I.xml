@@ -3,7 +3,7 @@
 	ColumnCount="20"
 	RowSpacing="3"
 	ColumnSpacing="3"
-	BackgroundTexture="path/to/texture">
+	BackgroundTexture="Textures/Background/ChapterI.png">
 	<BrickTypes>
 		<!-- Soft Brick -->
 		<BrickType

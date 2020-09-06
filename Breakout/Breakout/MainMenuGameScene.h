@@ -51,7 +51,7 @@ private:
 	/// </summary>
 	/// <param name="buttonPosition">Position of the button that text is placed on</param>
 	/// <returns></returns>
-	SDL_Color getTextColor(Position buttonPosition);
+	SDL_Color getTextColor(util::Position buttonPosition);
 	/// <summary>
 	/// Update current selected button by increasing/decreasing the index by the offset.
 	/// </summary>
@@ -62,22 +62,22 @@ private:
 	/// </summary>
 	void updateCurrentState();
 
-	const Position PLAY_BUTTON_POSITION = { 110, 250 };
-	const Position QUIT_BUTTON_POSITION = { 110, 450 };
-	const Position STORY_BUTTON_POSITION = { 550, 250 };
-	const Position ARCADE_BUTTON_POSITION = { 550, 370 };
-	const Position COOP_BUTTON_POSITION = { 550, 490 };
+	const util::Position PLAY_BUTTON_POSITION = { 110, 250 };
+	const util::Position QUIT_BUTTON_POSITION = { 110, 450 };
+	const util::Position STORY_BUTTON_POSITION = { 550, 250 };
+	const util::Position ARCADE_BUTTON_POSITION = { 550, 370 };
+	const util::Position COOP_BUTTON_POSITION = { 550, 490 };
 
-	const Position PLAY_TEXT_POSITION = { 190, 260 };
-	const Position QUIT_TEXT_POSITION = { 190, 465 };
-	const Position STORY_TEXT_POSITION = { 620, 270 };
-	const Position ARCADE_TEXT_POSITION = { 600, 390 };
-	const Position COOP_TEXT_POSITION = { 620, 510 };
+	const util::Position PLAY_TEXT_POSITION = { 190, 260 };
+	const util::Position QUIT_TEXT_POSITION = { 190, 465 };
+	const util::Position STORY_TEXT_POSITION = { 620, 270 };
+	const util::Position ARCADE_TEXT_POSITION = { 600, 390 };
+	const util::Position COOP_TEXT_POSITION = { 620, 510 };
 
 	MainMenuState mainMenuState;
 	int previousStateButtonIndex;
 	int selectedButtonIndex;
-	Position buttonPositions[5] = {PLAY_BUTTON_POSITION, QUIT_BUTTON_POSITION, STORY_BUTTON_POSITION, 
+	util::Position buttonPositions[5] = {PLAY_BUTTON_POSITION, QUIT_BUTTON_POSITION, STORY_BUTTON_POSITION, 
 		ARCADE_BUTTON_POSITION, COOP_BUTTON_POSITION};
 
 	SDL_Texture* backgroundTexture;

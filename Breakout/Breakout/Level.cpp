@@ -1,10 +1,9 @@
 #include "Level.h"
-#include "tinyxml2.h"
-#include <sstream>
-#include <string>
 
-Level::Level(std::string path)
+Level::Level(std::string path, SDL_Renderer* _renderer)
 {
+	renderer = _renderer;
+
 	// Initialize member variables via xmlDocument
 	tinyxml2::XMLDocument doc;
 	tinyxml2::XMLError eResult = doc.LoadFile(path.c_str());
@@ -82,17 +81,83 @@ Level::Level(std::string path)
 
 }
 
-void Level::load()
+bool Level::loadMedia()
 {
-	// TODO: Needs to be implemented
+	// Loading success flag
+	bool success = true;
+
+	// Load background image
+	backgroundTexture = util::loadTexture(renderer, backgroundTexturePath);
+	if (backgroundTexture == NULL)
+	{
+		std::cout << "Failed to load texture image!" << std::endl;
+		success = false;
+	}
+
+	// Load black button background
+	blackButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/BlackButton.png");
+	if (blackButtonTexture == NULL)
+	{
+		std::cout << "Failed to load texture image!" << std::endl;
+		success = false;
+	}
+
+	// Load white button background
+	whiteButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/WhiteButton.png");
+	if (whiteButtonTexture == NULL)
+	{
+		std::cout << "Failed to load texture image!" << std::endl;
+		success = false;
+	}
+
+	// Load HUD overlay
+	HUDTexture = util::loadTexture(renderer, HUDTexturePath);
+	if (HUDTexture == NULL)
+	{
+		std::cout << "Failed to load texture image!" << std::endl;
+		success = false;
+	}
+
+	// Load the font
+	font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HEADING_FONT_SIZE);
+	if (font == NULL)
+	{
+		std::cout << "Failed to load font! SDL_Error: " << TTF_GetError() << std::endl;
+		success = false;
+	}
+
+	return success;
 }
 
-void Level::play()
+void Level::update()
 {
-	// TODO: Needs to be implemented
+	// Render background texture to screen
+	SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+
+	// Render HUD texture to screen
+	SDL_RenderCopy(renderer, HUDTexture, NULL, NULL);
 }
 
-void Level::pause()
+void Level::handleInput(SDL_Event* e)
 {
-	// TODO: Needs to be implemented
+	// Handle events on the queue
+	while (SDL_PollEvent(e) != 0)
+	{
+		// User request quit
+		if (e->type == SDL_QUIT) {
+			levelState = LevelState::QUIT;
+		}
+		// User presses a key
+		if (e->type == SDL_KEYDOWN)
+		{
+			switch (e->key.keysym.sym)
+			{
+			case SDLK_ESCAPE:
+				levelState = LevelState::PAUSED;
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }

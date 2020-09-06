@@ -10,21 +10,21 @@ void MainMenuGameScene::update()
 	{
 	case MainMenuGameScene::MainMenuState::FIRST_MENU:
 		// Draw PLAY button
-		drawButton(blackButtonTexture, PLAY_BUTTON_POSITION);
+		util::drawButton(renderer, blackButtonTexture, PLAY_BUTTON_POSITION);
 		// Draw QUIT button
-		drawButton(blackButtonTexture, QUIT_BUTTON_POSITION);
+		util::drawButton(renderer, blackButtonTexture, QUIT_BUTTON_POSITION);
 		break;
 	case MainMenuGameScene::MainMenuState::SECOND_MENU:
 		// Draw PLAY button
-		drawButton(blackButtonTexture, PLAY_BUTTON_POSITION);
+		util::drawButton(renderer, blackButtonTexture, PLAY_BUTTON_POSITION);
 		// Draw QUIT button
-		drawButton(blackButtonTexture, QUIT_BUTTON_POSITION);
+		util::drawButton(renderer, blackButtonTexture, QUIT_BUTTON_POSITION);
 		// Draw STORY button
-		drawButton(blackButtonTexture, STORY_BUTTON_POSITION);
+		util::drawButton(renderer, blackButtonTexture, STORY_BUTTON_POSITION);
 		// Draw ARCADE button
-		drawButton(blackButtonTexture, ARCADE_BUTTON_POSITION);
+		util::drawButton(renderer, blackButtonTexture, ARCADE_BUTTON_POSITION);
 		// Draw CO-OP button
-		drawButton(blackButtonTexture, COOP_BUTTON_POSITION);
+		util::drawButton(renderer, blackButtonTexture, COOP_BUTTON_POSITION);
 		break;
 	default:
 		std::cout << "Invalid MainMenuState!" << std::endl;
@@ -32,12 +32,12 @@ void MainMenuGameScene::update()
 	}
 
 	// Add extra layer to selected button
-	drawButton(whiteButtonTexture, buttonPositions[selectedButtonIndex]);
+	util::drawButton(renderer, whiteButtonTexture, buttonPositions[selectedButtonIndex]);
 
 	// Add extra layer to previous state selected button if there is one
 	if (previousStateButtonIndex >= 0)
 	{
-		drawButton(orangeButtonTexture, buttonPositions[previousStateButtonIndex]);
+		util::drawButton(renderer, orangeButtonTexture, buttonPositions[previousStateButtonIndex]);
 	}
 
 	// Add text to buttons
@@ -45,21 +45,21 @@ void MainMenuGameScene::update()
 	{
 	case MainMenuGameScene::MainMenuState::FIRST_MENU:
 		// Draw PLAY text
-		drawText(font, getTextColor(PLAY_BUTTON_POSITION), "PLAY", PLAY_TEXT_POSITION, HEADING_FONT_SIZE);
+		util::drawText(renderer, font, getTextColor(PLAY_BUTTON_POSITION), "PLAY", PLAY_TEXT_POSITION, util::HEADING_FONT_SIZE);
 		// Draw QUIT text
-		drawText(font, getTextColor(QUIT_BUTTON_POSITION), "QUIT", QUIT_TEXT_POSITION, HEADING_FONT_SIZE);
+		util::drawText(renderer, font, getTextColor(QUIT_BUTTON_POSITION), "QUIT", QUIT_TEXT_POSITION, util::HEADING_FONT_SIZE);
 		break;
 	case MainMenuGameScene::MainMenuState::SECOND_MENU:
 		// Draw PLAY text
-		drawText(font, getTextColor(PLAY_BUTTON_POSITION), "PLAY", PLAY_TEXT_POSITION, HEADING_FONT_SIZE);
+		util::drawText(renderer, font, getTextColor(PLAY_BUTTON_POSITION), "PLAY", PLAY_TEXT_POSITION, util::HEADING_FONT_SIZE);
 		// Draw QUIT text
-		drawText(font, getTextColor(QUIT_BUTTON_POSITION), "QUIT", QUIT_TEXT_POSITION, HEADING_FONT_SIZE);
+		util::drawText(renderer, font, getTextColor(QUIT_BUTTON_POSITION), "QUIT", QUIT_TEXT_POSITION, util::HEADING_FONT_SIZE);
 		// Draw STORY text
-		drawText(font, getTextColor(STORY_BUTTON_POSITION), "STORY", STORY_TEXT_POSITION, HEADING_FONT_SIZE);
+		util::drawText(renderer, font, getTextColor(STORY_BUTTON_POSITION), "STORY", STORY_TEXT_POSITION, util::HEADING_FONT_SIZE);
 		// Draw ARCADE text
-		drawText(font, getTextColor(ARCADE_BUTTON_POSITION), "ARCADE", ARCADE_TEXT_POSITION, HEADING_FONT_SIZE);
+		util::drawText(renderer, font, getTextColor(ARCADE_BUTTON_POSITION), "ARCADE", ARCADE_TEXT_POSITION, util::HEADING_FONT_SIZE);
 		// Draw CO-OP text
-		drawText(font, getTextColor(COOP_BUTTON_POSITION), "CO-OP", COOP_TEXT_POSITION, HEADING_FONT_SIZE);
+		util::drawText(renderer, font, getTextColor(COOP_BUTTON_POSITION), "CO-OP", COOP_TEXT_POSITION, util::HEADING_FONT_SIZE);
 		break;
 	default:
 		std::cout << "Invalid MainMenuState!" << std::endl;
@@ -112,7 +112,7 @@ bool MainMenuGameScene::loadMedia()
 	bool success = true;
 
 	// Load MainMenu background
-	backgroundTexture = loadTexture("Textures/Background/MainMenu.png");
+	backgroundTexture = util::loadTexture(renderer, "Textures/Background/MainMenu.png");
 	if (backgroundTexture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
@@ -120,7 +120,7 @@ bool MainMenuGameScene::loadMedia()
 	}
 
 	// Load black button background
-	blackButtonTexture = loadTexture("UI/Textures/Buttons/BlackButton.png");
+	blackButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/BlackButton.png");
 	if (blackButtonTexture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
@@ -128,7 +128,7 @@ bool MainMenuGameScene::loadMedia()
 	}
 
 	// Load white button background
-	whiteButtonTexture = loadTexture("UI/Textures/Buttons/WhiteButton.png");
+	whiteButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/WhiteButton.png");
 	if (whiteButtonTexture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
@@ -136,7 +136,7 @@ bool MainMenuGameScene::loadMedia()
 	}
 
 	// Load orange button background
-	orangeButtonTexture = loadTexture("UI/Textures/Buttons/OrangeButton.png");
+	orangeButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/OrangeButton.png");
 	if (orangeButtonTexture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
@@ -144,7 +144,7 @@ bool MainMenuGameScene::loadMedia()
 	}
 
 	// Load the font
-	font = TTF_OpenFont("Fonts/p5hatty.ttf", HEADING_FONT_SIZE);
+	font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HEADING_FONT_SIZE);
 	if (font == NULL)
 	{
 		std::cout << "Failed to load font! SDL_Error: " << TTF_GetError() << std::endl;
@@ -154,10 +154,10 @@ bool MainMenuGameScene::loadMedia()
 	return success;
 }
 
-SDL_Color MainMenuGameScene::getTextColor(Position buttonPosition)
+SDL_Color MainMenuGameScene::getTextColor(util::Position buttonPosition)
 {
-	Position selectedButtonPosition = buttonPositions[selectedButtonIndex];
-	Position previousStateButtonPosition = buttonPositions[previousStateButtonIndex];
+	util::Position selectedButtonPosition = buttonPositions[selectedButtonIndex];
+	util::Position previousStateButtonPosition = buttonPositions[previousStateButtonIndex];
 
 	// If the button position is the same as the currently selected button position return black color
 	if (selectedButtonPosition.x == buttonPosition.x && selectedButtonPosition.y == buttonPosition.y)

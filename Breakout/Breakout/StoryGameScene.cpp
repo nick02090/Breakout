@@ -9,12 +9,8 @@ void StoryGameScene::update()
 		narrationUpdate();
 		break;
 	// Render update if story is in playing level mode
-	case StoryGameScene::StoryState::PLAY:
-		playUpdate();
-		break;
-	// Render update if story is in paused from playing level mode
-	case StoryGameScene::StoryState::PAUSE:
-		pauseUpdate();
+	case StoryGameScene::StoryState::LEVEL:
+		levelUpdate();
 		break;
 	default:
 		break;
@@ -30,12 +26,8 @@ void StoryGameScene::handleInput(SDL_Event* e)
 		narrationHandleInput(e);
 		break;
 	// Handle input if story is in playing level mode
-	case StoryGameScene::StoryState::PLAY:
-		playHandleInput(e);
-		break;
-	// Handle input if story is in paused from playing level mode
-	case StoryGameScene::StoryState::PAUSE:
-		pauseHandleInput(e);
+	case StoryGameScene::StoryState::LEVEL:
+		levelHandleInput(e);
 		break;
 	default:
 		break;
@@ -48,7 +40,7 @@ bool StoryGameScene::loadMedia()
 	bool success = true;
 
 	// Load StoryTransition background
-	backgroundTransitionTexture = loadTexture("Textures/Background/StoryTransition.png");
+	backgroundTransitionTexture = util::loadTexture(renderer, "Textures/Background/StoryTransition.png");
 	if (backgroundTransitionTexture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
@@ -56,7 +48,7 @@ bool StoryGameScene::loadMedia()
 	}
 
 	// Load black button background
-	blackButtonTexture = loadTexture("UI/Textures/Buttons/BlackButton.png");
+	blackButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/BlackButton.png");
 	if (blackButtonTexture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
@@ -64,7 +56,7 @@ bool StoryGameScene::loadMedia()
 	}
 
 	// Load white button background
-	whiteButtonTexture = loadTexture("UI/Textures/Buttons/WhiteButton.png");
+	whiteButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/WhiteButton.png");
 	if (whiteButtonTexture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
@@ -72,7 +64,7 @@ bool StoryGameScene::loadMedia()
 	}
 
 	// Load the font
-	font = TTF_OpenFont("Fonts/p5hatty.ttf", HEADING_FONT_SIZE);
+	font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HEADING_FONT_SIZE);
 	if (font == NULL)
 	{
 		std::cout << "Failed to load font! SDL_Error: " << TTF_GetError() << std::endl;
@@ -100,8 +92,15 @@ void StoryGameScene::narrationHandleInput(SDL_Event* e)
 				currentChapterLine = chapters[currentChapterIndex]->getNextLine();
 				if (currentChapterLine._Equal("PLAY"))
 				{
-					storyState = StoryState::PLAY;
-					currentLevel = new Level(chapters[currentChapterIndex]->getPathToLevel());
+					// Change state for playing the level
+					storyState = StoryState::LEVEL;
+					// Initialize the level
+					currentLevel = new Level(chapters[currentChapterIndex]->getPathToLevel(), renderer);
+					// Load the level media
+					if (!currentLevel->loadMedia())
+					{
+						std::cout << "Failed to load the level media!" << std::endl;
+					}
 				}
 				else if (currentChapterLine._Equal("END"))
 				{
@@ -110,6 +109,10 @@ void StoryGameScene::narrationHandleInput(SDL_Event* e)
 					{
 						// Finished all of the chapters, return to the MainMenu
 						nextGameState = GameState::MAIN_MENU;
+					}
+					else
+					{
+						currentChapterLine = chapters[currentChapterIndex]->getNextLine();
 					}
 				}
 				break;
@@ -120,45 +123,35 @@ void StoryGameScene::narrationHandleInput(SDL_Event* e)
 	}
 }
 
-void StoryGameScene::playHandleInput(SDL_Event* e)
+void StoryGameScene::levelHandleInput(SDL_Event* e)
 {
-	// Handle events on the queue
-	while (SDL_PollEvent(e) != 0)
+	// Let level handle it's own input
+	currentLevel->handleInput(e);
+	// Check if level has ended
+	if (currentLevel->hasEnded())
 	{
-		// User request quit
-		if (e->type == SDL_QUIT) {
-			shouldQuit = true;
-		}
-		// User presses a key
-		if (e->type == SDL_KEYDOWN)
-		{
-			switch (e->key.keysym.sym)
-			{
-			default:
-				break;
-			}
-		}
+		// Delete the level
+		delete currentLevel;
+		// Finish the chapter narration
+		storyState = StoryState::NARRATION;
+		// Update chapter line
+		currentChapterLine = chapters[currentChapterIndex]->getNextLine();
 	}
-}
-
-void StoryGameScene::pauseHandleInput(SDL_Event* e)
-{
-	// Handle events on the queue
-	while (SDL_PollEvent(e) != 0)
+	// Check if level requested to quit the whole game
+	if (currentLevel->hasRequestedQuit())
 	{
-		// User request quit
-		if (e->type == SDL_QUIT) {
-			shouldQuit = true;
-		}
-		// User presses a key
-		if (e->type == SDL_KEYDOWN)
-		{
-			switch (e->key.keysym.sym)
-			{
-			default:
-				break;
-			}
-		}
+		// Delete the level
+		delete currentLevel;
+		// Request a quit application
+		shouldQuit = true;
+	}
+	// Check if level requested to go to main menu
+	if (currentLevel->hasRequestedMainMenu())
+	{
+		// Delete the level
+		delete currentLevel;
+		// Request MainMenu
+		nextGameState = GameState::MAIN_MENU;
 	}
 }
 
@@ -169,32 +162,19 @@ void StoryGameScene::narrationUpdate()
 
 	// Draw title
 	SDL_Color white = {250, 250, 250};
-	drawText(font, white, chapters[currentChapterIndex]->getTitle().c_str(), {screenWidth/10, screenHeight/10}, HEADING_FONT_SIZE);
+	util::drawText(renderer, font, white, chapters[currentChapterIndex]->getTitle().c_str(), {screenWidth/10, screenHeight/10}, util::HEADING_FONT_SIZE);
 
 	// Draw text
-	drawText(font, white, currentChapterLine.c_str(), {screenWidth/10, screenHeight/2}, PARAGRAPH_FONT_SIZE);
+	util::drawText(renderer, font, white, currentChapterLine.c_str(), {screenWidth/10, screenHeight/2}, util::PARAGRAPH_FONT_SIZE);
 
 	// Draw confirm button and it's text
 	SDL_Color black = { 0, 0, 0 };
-	drawButton(whiteButtonTexture, {750, 700});
-	drawText(font, black, "OK", {850, 720}, HEADING_FONT_SIZE);
+	util::drawButton(renderer, whiteButtonTexture, {750, 700});
+	util::drawText(renderer, font, black, "OK", {850, 720}, util::HEADING_FONT_SIZE);
 }
 
-void StoryGameScene::playUpdate()
+void StoryGameScene::levelUpdate()
 {
-	// Render background texture to screen
-
-	// Play the level
-}
-
-void StoryGameScene::pauseUpdate()
-{
-	// Pause everything
-
-	// Dim the current screen
-
-	// Draw text
-	// "PAUSED"
-	// continue
-	//  quit
+	// Render the level on a screen
+	currentLevel->update();
 }

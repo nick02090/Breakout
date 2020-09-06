@@ -8,8 +8,7 @@ public:
 	enum class StoryState
 	{
 		NARRATION,
-		PLAY,
-		PAUSE
+		LEVEL
 	};
 
 	enum class StoryChapterState
@@ -62,11 +61,9 @@ public:
 	bool loadMedia();
 private:
 	void narrationHandleInput(SDL_Event* e);
-	void playHandleInput(SDL_Event* e);
-	void pauseHandleInput(SDL_Event* e);
+	void levelHandleInput(SDL_Event* e);
 	void narrationUpdate();
-	void playUpdate();
-	void pauseUpdate();
+	void levelUpdate();
 
 	const std::string FIRST_CHAPTER_PATH = "Chapters/Chapter_I.xml";
 	const std::string SECOND_CHAPTER_PATH = "Chapters/Chapter_II.xml";
