@@ -36,6 +36,10 @@ void Game::start()
 		// Handle input for the current scene
 		gameScene->handleInput(&e);
 		quit = gameScene->hasRequestedToQuit();
+		if (quit)
+		{
+			break;
+		}
 		// Change scene if it was requested
 		if (gameScene->hasRequestNextGameState())
 		{
