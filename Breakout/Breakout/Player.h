@@ -12,6 +12,9 @@ public:
 		// Set member variables
 		currentLives = MAX_LIVES;
 		currentScore = 0;
+
+		width = WIDTH;
+		height = HEIGHT;
 	}
 	~Player()
 	{
@@ -19,20 +22,23 @@ public:
 		SDL_DestroyTexture(texture);
 		texture = NULL;
 	}
-	inline void render(util::Position screenPosition, float widthFactor = 1.0, float heightFactor = 1.0)
+	inline void render(util::Position _screenPosition, float widthFactor = 1.0, float heightFactor = 1.0)
 	{
+		// Update position on the screen
+		screenPosition = _screenPosition;
+
 		// Create a rect to position the texture
-		SDL_Rect rect;
+		SDL_FRect rect;
 		rect.x = screenPosition.x;
 		rect.y = screenPosition.y;
-		rect.w = static_cast<int>(WIDTH / widthFactor);
-		rect.h = static_cast<int>(HEIGHT / heightFactor);
+		rect.w = width / widthFactor;
+		rect.h = height / heightFactor;
 
 		// Render the texture on the screen
-		SDL_RenderCopy(renderer, texture, NULL, &rect);
+		SDL_RenderCopyF(renderer, texture, NULL, &rect);
 
 		// Update velocity
-		velocity = util::clamp(velocity - 1, MIN_VELOCITY, MAX_VELOCITY);
+		velocity = util::clamp(velocity - 1.f, MIN_VELOCITY, MAX_VELOCITY);
 	}
 	/// <summary>
 	/// Add points to the player score.
@@ -75,21 +81,21 @@ public:
 	}
 	inline void turnOffAcceleration()
 	{
-		acceleration = 0;
+		acceleration = 0.f;
 	}
 	inline void increaseAcceleration(bool isNegative)
 	{
 		if (isNegative)
 		{
-			velocityMultiplier = -1;
+			velocityMultiplier = -1.f;
 		} 
 		else 
 		{
-			velocityMultiplier = 1;
+			velocityMultiplier = 1.f;
 		}
-		acceleration++;
+		acceleration += 1.f;
 	}
-	inline int getVelocity()
+	inline float getVelocity()
 	{
 		velocity = util::clamp(velocity + acceleration, MIN_VELOCITY, MAX_VELOCITY);
 		return velocity * velocityMultiplier;
@@ -98,18 +104,18 @@ private:
 	const std::string TEXTURE_PATH = "GameObjects/Player.png";
 	const int MAX_LIVES = 3;
 
-	const int WIDTH = 100;
-	const int HEIGHT = 20;
+	const float WIDTH = 100.f;
+	const float HEIGHT = 20.f;
 
 	SDL_Texture* texture;
 
 	int currentLives;
 	int currentScore;
 
-	const int MIN_VELOCITY = 5;
-	const int MAX_VELOCITY = 20;
-	int acceleration = 0;
-	int velocity = MIN_VELOCITY;
-	int velocityMultiplier = -1;
+	const float MIN_VELOCITY = 5.f;
+	const float MAX_VELOCITY = 20.f;
+	float acceleration = 0.f;
+	float velocity = MIN_VELOCITY;
+	float velocityMultiplier = -1.f;
 };
 

@@ -59,10 +59,10 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 		}
 
 		// Calculate bricks screen factors
-		int neededBrickWidth = columnCount * BRICK_WIDHT + (columnCount - 1) * rowSpacing;
-		int neededBrickHeight = rowCount * BRICK_HEIGHT + (rowCount - 1) * columnSpacing;
-		bricksWidthFactor = (float)neededBrickWidth / (float)MAX_BRICKS_WIDTH;
-		bricksHeightFactor = (float)neededBrickHeight / (float)MAX_BRICKS_HEIGHT;
+		float neededBrickWidth = columnCount * BRICK_WIDHT + (columnCount - 1) * rowSpacing;
+		float neededBrickHeight = rowCount * BRICK_HEIGHT + (rowCount - 1) * columnSpacing;
+		bricksWidthFactor = neededBrickWidth / MAX_BRICKS_WIDTH;
+		bricksHeightFactor = neededBrickHeight / MAX_BRICKS_HEIGHT;
 
 		// Get Bricks node and it'a attributes
 		tinyxml2::XMLElement* bricksElement = brickTypesElement->NextSiblingElement();
@@ -89,8 +89,8 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 						if (brick->getID()._Equal(id))
 						{
 							int col = static_cast<int>(bricksRow.size());
-							int x = static_cast<int>(firstBrickPosition.x + col * (50.0 + columnSpacing) / bricksWidthFactor);
-							int y = static_cast<int>(firstBrickPosition.y + row * (20.0 + rowSpacing) / bricksHeightFactor);
+							float x = firstBrickPosition.x + col * (50.f + columnSpacing) / bricksWidthFactor;
+							float y = firstBrickPosition.y + row * (20.f + rowSpacing) / bricksHeightFactor;
 							bricksRow.push_back(new Brick(brick));
 							bricksRowPositions.push_back({x, y});
 							break;
@@ -167,39 +167,76 @@ void Level::update()
 	
 	// Draw level name on the HUD
 	SDL_Color white = { 250, 250, 250 };
-	util::Position namePosition = { 484 - static_cast<int>(name.size()) * 12, 688 };
+	util::Position namePosition = { 484.f - static_cast<int>(name.size()) * 12.f, 688.f };
 	util::drawText(renderer, font, white, name.c_str(), namePosition, util::PARAGRAPH_FONT_SIZE);
 
 	// Draw player score on the HUD
 	SDL_Color cyan = { 0, 255, 225 };
-	util::Position scorePosition = { 96, 735 };
+	util::Position scorePosition = { 96.f, 735.f };
 	util::drawText(renderer, font, cyan, std::to_string(player->getCurrentScore()).c_str(), scorePosition, util::PARAGRAPH_FONT_SIZE);
 
 	// Draw player lives on the HUD
 	SDL_Color red = { 255, 0, 84 };
-	util::Position livesPosition = { 990, 735 };
+	util::Position livesPosition = { 990.f, 735.f };
 	util::drawText(renderer, font, red, std::to_string(player->getCurrentLives()).c_str(), livesPosition, util::PARAGRAPH_FONT_SIZE);
 
 	// Draw the player
 	player->render(currentPlayerPosition);
 
 	// Draw the ball
+	currentBallPosition.x = util::clamp(currentBallPosition.x + currentBallDirectionX * (float)ball->getVelocity(), 0.f, 1024.f - 20.f);
+	currentBallPosition.y = util::clamp(currentBallPosition.y + currentBallDirectionY * (float)ball->getVelocity(), 0.f, 768.f - 50.f);
 	ball->render(currentBallPosition);
 
-	// Draw bricks
-	for (int row = 0; row < static_cast<int>(bricksLayout.size()); row++)
+	// Update ball upon a collision (bounce off)
+	if (ball->hasHitWall())
 	{
-		for (int col = 0; col < static_cast<int>(bricksLayout.at(row).size()); col++)
+		// Ball hit bounding box -> bounce off by simple invert
+		Ball::WallHit wallHit = ball->getPreviousWallHit();
+		switch (wallHit)
 		{
-			Brick* brick = bricksLayout.at(row).at(col);
-			if (brick->getIsCrushed())
-			{
-				continue;
-			}
-			util::Position brickPosition = bricksPositions.at(row).at(col);
-			brick->render(brickPosition, bricksWidthFactor, bricksHeightFactor);
+		case Ball::WallHit::HORIZIONTAL:
+			currentBallDirectionX *= -1.f;
+			break;
+		case Ball::WallHit::VERTICAL:
+			currentBallDirectionY *= -1.f;
+			break;
+		default:
+			break;
 		}
 	}
+	if (ball->hasFellDown())
+	{
+		// Ball fell down off the screen -> reposition at the start
+		currentBallPosition = { 485.f, 618.f };
+		// TODO: Randomize this direction
+		currentBallDirectionX = 1.f;
+		currentBallDirectionY = -1.f;
+		// Reduce 1 life point to the player
+		player->reduceLives();
+	}
+	if (ball->isInCollisionWith(player))
+	{
+		// Ball hits the player -> bounce off by invert and player speed
+		currentBallDirectionY *= -1.f;
+		// TODO: Implement direction change based on player speed
+	}
+
+	// TODO: Draw back the bricks once you finish collisions and once you implement brick destroy
+	// Draw bricks
+	//for (int row = 0; row < static_cast<int>(bricksLayout.size()); row++)
+	//{
+	//	for (int col = 0; col < static_cast<int>(bricksLayout.at(row).size()); col++)
+	//	{
+	//		Brick* brick = bricksLayout.at(row).at(col);
+	//		if (brick->getIsCrushed())
+	//		{
+	//			continue;
+	//		}
+	//		util::Position brickPosition = bricksPositions.at(row).at(col);
+	//		brick->render(brickPosition, bricksWidthFactor, bricksHeightFactor);
+	//	}
+	//}
 }
 
 void Level::handleInput(SDL_Event* e)
@@ -221,11 +258,11 @@ void Level::handleInput(SDL_Event* e)
 				break;
 			case SDLK_LEFT:
 				player->increaseAcceleration(true);
-				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0, 1024-100);
+				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0.f, 1024.f - 100.f);
 				break;
 			case SDLK_RIGHT:
 				player->increaseAcceleration(false);
-				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0, 1024 - 100);
+				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0.f, 1024.f - 100.f);
 				break;
 			default:
 				break;

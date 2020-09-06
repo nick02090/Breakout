@@ -26,7 +26,64 @@ public:
 	/// <returns></returns>
 	bool isInCollisionWith(GameObject* otherObject)
 	{
-		// TODO: Implement collision check based on objects type and position
+		// Rectangle - Rectangle collision check
+		if (type == GameObjectType::Rectangle && otherObject->type == GameObjectType::Rectangle)
+		{
+			std::cout << "REC-REC" << std::endl;
+		}
+		// Circle - Circle collision check
+		else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Circle)
+		{
+			std::cout << "CIR-CIR" << std::endl;
+		}
+		// Circle - Rectangle collision check
+		else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Rectangle)
+		{
+			return circleToRectangleCollision(this, otherObject);
+		}
+		// Rectangle - Circle check
+		else if (type == GameObjectType::Rectangle && otherObject->type == GameObjectType::Circle)
+		{
+			return circleToRectangleCollision(otherObject, this);
+		}
+
+		return false;
+	}
+	static bool circleToRectangleCollision(GameObject* circle, GameObject* rectangle)
+	{
+		float testX = circle->screenPosition.x;
+		float testY = circle->screenPosition.y;
+
+		// Left edge
+		if (circle->screenPosition.x < rectangle->screenPosition.x)
+		{
+			testX = rectangle->screenPosition.x;
+		}
+		// Right edge
+		else if (circle->screenPosition.x > rectangle->screenPosition.x + rectangle->width)
+		{
+			testX = rectangle->screenPosition.x + rectangle->width;
+		}
+
+		// Top edge
+		if (circle->screenPosition.y < rectangle->screenPosition.y)
+		{
+			testY = rectangle->screenPosition.y;
+		}
+		// Bottom edge
+		else if (circle->screenPosition.y > rectangle->screenPosition.y + rectangle->height)
+		{
+			testY = rectangle->screenPosition.y + rectangle->height;
+		}
+
+		float distX = circle->screenPosition.x - testX;
+		float distY = circle->screenPosition.y - testY;
+		float distance = std::sqrt((distX * distX) + (distY * distY));
+		if (distance <= circle->radius)
+		{
+			return true;
+		}
+		return false;
 	}
 	/// <summary>
 	/// Type of the game object. This is used for collision checking.
@@ -40,5 +97,9 @@ public:
 	/// Renderer for rendering the object on the screen.
 	/// </summary>
 	SDL_Renderer* renderer;
+
+	float width;
+	float height;
+	float radius = 0.f;
 };
 

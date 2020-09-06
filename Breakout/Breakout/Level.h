@@ -71,10 +71,10 @@ public:
 private:
 	const std::string HUDTexturePath = "Textures/LevelHUD.png";
 	
-	const int MAX_BRICKS_WIDTH = 994;
-	const int MAX_BRICKS_HEIGHT = 600;
-	const int BRICK_HEIGHT = 20;
-	const int BRICK_WIDHT = 50;
+	const float MAX_BRICKS_WIDTH = 994.f;
+	const float MAX_BRICKS_HEIGHT = 600.f;
+	const float BRICK_HEIGHT = 20.f;
+	const float BRICK_WIDHT = 50.f;
 	float bricksWidthFactor;
 	float bricksHeightFactor;
 
@@ -89,10 +89,13 @@ private:
 	Player* player;
 	Ball* ball;
 
-	util::Position currentPlayerPosition = {445, 648};
-	util::Position currentBallPosition = {485, 618};
-	util::Position firstBrickPosition = {15, 15};
+	util::Position currentPlayerPosition = {445.f, 648.f};
+	util::Position currentBallPosition = {485.f, 618.f};
+	util::Position firstBrickPosition = {15.f, 15.f};
 	std::vector<std::vector<util::Position>> bricksPositions;
+
+	float currentBallDirectionX = 1.f;
+	float currentBallDirectionY = -1.f;
 
 	std::string name;
 

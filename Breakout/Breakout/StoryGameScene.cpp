@@ -162,16 +162,16 @@ void StoryGameScene::narrationUpdate()
 	SDL_RenderCopy(renderer, backgroundTransitionTexture, NULL, NULL);
 
 	// Draw title
-	SDL_Color white = {250, 250, 250};
-	util::drawText(renderer, font, white, chapters[currentChapterIndex]->getTitle().c_str(), {screenWidth/10, screenHeight/10}, util::HEADING_FONT_SIZE);
+	SDL_Color white = { 250, 250, 250 };
+	util::drawText(renderer, font, white, chapters[currentChapterIndex]->getTitle().c_str(), {screenWidth/10.f, screenHeight/10.f}, util::HEADING_FONT_SIZE);
 
 	// Draw text
-	util::drawText(renderer, font, white, currentChapterLine.c_str(), {screenWidth/10, screenHeight/2}, util::PARAGRAPH_FONT_SIZE);
+	util::drawText(renderer, font, white, currentChapterLine.c_str(), {screenWidth/10.f, screenHeight/2.f}, util::PARAGRAPH_FONT_SIZE);
 
 	// Draw confirm button and it's text
 	SDL_Color black = { 0, 0, 0 };
-	util::drawButton(renderer, whiteButtonTexture, {750, 700});
-	util::drawText(renderer, font, black, "OK", {850, 720}, util::HEADING_FONT_SIZE);
+	util::drawButton(renderer, whiteButtonTexture, { 750.f, 700.f });
+	util::drawText(renderer, font, black, "OK", { 850.f, 720.f }, util::HEADING_FONT_SIZE);
 }
 
 void StoryGameScene::levelUpdate()

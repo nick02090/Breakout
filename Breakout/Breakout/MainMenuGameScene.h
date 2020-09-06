@@ -62,17 +62,17 @@ private:
 	/// </summary>
 	void updateCurrentState();
 
-	const util::Position PLAY_BUTTON_POSITION = { 110, 250 };
-	const util::Position QUIT_BUTTON_POSITION = { 110, 450 };
-	const util::Position STORY_BUTTON_POSITION = { 550, 250 };
-	const util::Position ARCADE_BUTTON_POSITION = { 550, 370 };
-	const util::Position COOP_BUTTON_POSITION = { 550, 490 };
+	const util::Position PLAY_BUTTON_POSITION = { 110.f, 250.f };
+	const util::Position QUIT_BUTTON_POSITION = { 110.f, 450.f };
+	const util::Position STORY_BUTTON_POSITION = { 550.f, 250.f };
+	const util::Position ARCADE_BUTTON_POSITION = { 550.f, 370.f };
+	const util::Position COOP_BUTTON_POSITION = { 550.f, 490.f };
 
-	const util::Position PLAY_TEXT_POSITION = { 190, 260 };
-	const util::Position QUIT_TEXT_POSITION = { 190, 465 };
-	const util::Position STORY_TEXT_POSITION = { 620, 270 };
-	const util::Position ARCADE_TEXT_POSITION = { 600, 390 };
-	const util::Position COOP_TEXT_POSITION = { 620, 510 };
+	const util::Position PLAY_TEXT_POSITION = { 190.f, 260.f };
+	const util::Position QUIT_TEXT_POSITION = { 190.f, 465.f };
+	const util::Position STORY_TEXT_POSITION = { 620.f, 270.f };
+	const util::Position ARCADE_TEXT_POSITION = { 600.f, 390.f };
+	const util::Position COOP_TEXT_POSITION = { 620.f, 510.f };
 
 	MainMenuState mainMenuState;
 	int previousStateButtonIndex;

@@ -13,6 +13,9 @@ public:
 		timesHit = 0;
 		// Load all necessary assets
 		texture = util::loadTexture(renderer, texturePath);
+
+		width = WIDTH;
+		height = HEIGHT;
 	}
 	Brick(Brick* _brick) : Brick(_brick->renderer, _brick->name, _brick->ID, _brick->texturePath, _brick->hitPoints, _brick->hitSoundPath, _brick->breakSoundPath, _brick->breakScore) {}
 	~Brick()
@@ -21,17 +24,20 @@ public:
 		SDL_DestroyTexture(texture);
 		texture = NULL;
 	}
-	void render(util::Position screenPosition, float widthFactor = 1.0, float heightFactor = 1.0)
+	void render(util::Position _screenPosition, float widthFactor = 1.0, float heightFactor = 1.0)
 	{
+		// Update position on the screen
+		screenPosition = _screenPosition;
+
 		// Create a rect to position the texture
-		SDL_Rect rect;
+		SDL_FRect rect;
 		rect.x = screenPosition.x;
 		rect.y = screenPosition.y;
-		rect.w = static_cast<int>(WIDTH / widthFactor);
-		rect.h = static_cast<int>(HEIGHT / heightFactor);
+		rect.w = width / widthFactor;
+		rect.h = height / heightFactor;
 
 		// Render the texture on the screen
-		SDL_RenderCopy(renderer, texture, NULL, &rect);
+		SDL_RenderCopyF(renderer, texture, NULL, &rect);
 	}
 	/// <summary>
 	/// Updates bricks parameters and potentially deletes it.
@@ -73,8 +79,8 @@ private:
 	std::string breakSoundPath;
 	int breakScore;
 
-	const int WIDTH = 50;
-	const int HEIGHT = 20;
+	const float WIDTH = 50.f;
+	const float HEIGHT = 20.f;
 
 	/// <summary>
 	/// Number of times hit

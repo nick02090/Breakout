@@ -10,14 +10,16 @@ namespace util
 
 	struct Position
 	{
-		int x;
-		int y;
+		float x;
+		float y;
 	};
 
 	/// <summary>
 	/// Determines whether the given position is within the screen range.
 	/// </summary>
 	/// <param name="position"></param>
+	/// <param name="screenWidth"></param>
+	/// <param name="screenHeight"></param>
 	/// <returns></returns>
 	static bool isValidPosition(Position position, int screenWidth, int screenHeight)
 	{
@@ -100,14 +102,14 @@ namespace util
 		SDL_Texture* messageTexture = SDL_CreateTextureFromSurface(renderer, messageSurface);
 
 		// Create a rect to position the texture
-		SDL_Rect messageRect;
+		SDL_FRect messageRect;
 		messageRect.x = position.x;
 		messageRect.y = position.y;
-		messageRect.w = std::strlen(message) * 25;
-		messageRect.h = height;
+		messageRect.w = static_cast<float>(std::strlen(message) * 25);
+		messageRect.h = static_cast<float>(height);
 
 		// Render the texture on the screen
-		SDL_RenderCopy(renderer, messageTexture, NULL, &messageRect);
+		SDL_RenderCopyF(renderer, messageTexture, NULL, &messageRect);
 
 		// Get rid of the surface and the texture
 		SDL_FreeSurface(messageSurface);
@@ -122,13 +124,13 @@ namespace util
 	static void drawButton(SDL_Renderer* renderer, SDL_Texture* texture, Position position)
 	{
 		// Create a rect to position the texture
-		SDL_Rect rect;
+		SDL_FRect rect;
 		rect.x = position.x;
 		rect.y = position.y;
-		rect.w = 270;
-		rect.h = 70;
+		rect.w = 270.f;
+		rect.h = 70.f;
 
 		// Render the texture on the screen
-		SDL_RenderCopy(renderer, texture, NULL, &rect);
+		SDL_RenderCopyF(renderer, texture, NULL, &rect);
 	}
 }
