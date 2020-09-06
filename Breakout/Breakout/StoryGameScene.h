@@ -23,6 +23,9 @@ public:
 		// Initialize member variables
 		storyState = StoryState::NARRATION;
 
+		// Initialize the player
+		player = new Player(_renderer);
+
 		// Initialize textures
 		backgroundTransitionTexture = NULL;
 		blackButtonTexture = NULL;
@@ -51,6 +54,9 @@ public:
 		blackButtonTexture = NULL;
 		SDL_DestroyTexture(whiteButtonTexture);
 		whiteButtonTexture = NULL;
+
+		// Delete the player
+		delete player;
 
 		// Free loaded font
 		TTF_CloseFont(font);
@@ -84,6 +90,7 @@ private:
 	std::string currentChapterLine;
 
 	Level* currentLevel;
+	Player* player;
 
 	TTF_Font* font;
 };

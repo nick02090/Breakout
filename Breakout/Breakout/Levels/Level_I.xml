@@ -8,7 +8,7 @@
 		<!-- Soft Brick -->
 		<BrickType
 			Id="S"
-			Texture="path/to/texture"
+			Texture="GameObjects/SoftBrick.png"
 			HitPoints="1"
 			HitSound="path/to/sound"
 			BreakSound="path/to/sound"
@@ -16,7 +16,7 @@
 		<!-- Medium Brick -->
 		<BrickType
 			Id="M"
-			Texture="path/to/texture"
+			Texture="GameObjects/MediumBrick.png"
 			HitPoints="2"
 			HitSound="path/to/sound"
 			BreakSound="path/to/sound"
@@ -24,7 +24,7 @@
 		<!-- Hard Brick -->
 		<BrickType
 			Id="H"
-			Texture="path/to/texture"
+			Texture="GameObjects/HardBrick.png"
 			HitPoints="3"
 			HitSound="path/to/sound"
 			BreakSound="path/to/sound"
@@ -32,7 +32,7 @@
 		<!-- Impenetrable Brick -->
 		<BrickType
 			Id="I"
-			Texture="path/to/texture"
+			Texture="GameObjects/ImpenetrableBrick.png"
 			HitPoints="Infinite"
 			HitSound="path/to/texture" />
 	</BrickTypes>

@@ -1,14 +1,12 @@
 #pragma once
-#include <iostream>
 #include <vector>
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
 #include "Brick.h"
 #include "tinyxml2.h"
 #include <sstream>
 #include <string>
 #include "Utilities.h"
+#include "Player.h"
+#include "Ball.h"
 namespace util
 {
 	class Array2D;
@@ -26,7 +24,7 @@ public:
 		MAINMENU
 	};
 
-	Level(std::string path, SDL_Renderer* _renderer);
+	Level(std::string path, SDL_Renderer* _renderer, Player* _player);
 	~Level()
 	{
 		// Free loaded images
@@ -80,6 +78,9 @@ private:
 	std::string backgroundTexturePath;
 	std::vector<std::vector<std::string>> bricksLayout;
 	std::vector<Brick*> bricks;
+
+	Player* player;
+	Ball* ball;
 
 	LevelState levelState = LevelState::PLAYING;
 

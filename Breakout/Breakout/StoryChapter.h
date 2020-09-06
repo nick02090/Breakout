@@ -55,7 +55,7 @@ public:
 		// Increase line counter
 		currentLineIndex += 1;
 		// Check if there is more lines in the chapter
-		if (currentLineIndex < lines.size())
+		if (currentLineIndex < static_cast<int>(lines.size()))
 		{
 			return lines.at(currentLineIndex);
 		}

@@ -1,6 +1,6 @@
 #pragma once
-class SDL_Window;
-class SDL_Renderer;
+struct SDL_Window;
+struct SDL_Renderer;
 class GameScene;
 enum class GameState;
 class Game

@@ -1,8 +1,10 @@
 #include "Level.h"
 
-Level::Level(std::string path, SDL_Renderer* _renderer)
+Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player)
 {
 	renderer = _renderer;
+	player = _player;
+	ball = new Ball(renderer);
 
 	// Initialize member variables via xmlDocument
 	tinyxml2::XMLDocument doc;
@@ -43,7 +45,7 @@ Level::Level(std::string path, SDL_Renderer* _renderer)
 			{
 				breakScore = std::stoi(breakScorevalue);
 			}
-			Brick* brick = new Brick(name, id, texturePath, hitPoints, hitSoundPath, breakSoundPath, breakScore);
+			Brick* brick = new Brick(_renderer, name, id, texturePath, hitPoints, hitSoundPath, breakSoundPath, breakScore);
 			bricks.push_back(brick);
 			// Get next brick if there is one
 			tinyxml2::XMLNode* nextSibling = brickElement->NextSibling();

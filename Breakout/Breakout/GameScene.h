@@ -1,7 +1,7 @@
 #pragma once
-#include <iostream>
 #include "Utilities.h"
 #include "Level.h"
+#include "Player.h"
 
 enum class GameState
 {
