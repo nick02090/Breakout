@@ -217,26 +217,57 @@ void Level::update()
 	}
 	if (ball->isInCollisionWith(player))
 	{
-		// Ball hits the player -> bounce off by invert and player speed
-		currentBallDirectionY *= -1.f;
-		// TODO: Implement direction change based on player speed
+		// Ball hits the player -> bounce off by simple invert
+		currentBallDirectionY = -1.f;
+		// Ball hits the player in movement -> bounce off in the way of the movement
+		if (std::abs(player->getVelocity()) >= 10.f) 
+		{
+			currentBallDirectionX = player->getVelocity() >= 0 ? 1.f : -1.f;
+		}
+		// Ball hits the very edge of the player -> bounce off in the way of the edge
+		else if (player->isHitFromLeftEdge)
+		{
+			currentBallDirectionX = -1.f;
+		}
+		else if (player->isHitFromRightEdge)
+		{
+			currentBallDirectionX = 1.f;
+		}
 	}
 
-	// TODO: Draw back the bricks once you finish collisions and once you implement brick destroy
 	// Draw bricks
-	//for (int row = 0; row < static_cast<int>(bricksLayout.size()); row++)
-	//{
-	//	for (int col = 0; col < static_cast<int>(bricksLayout.at(row).size()); col++)
-	//	{
-	//		Brick* brick = bricksLayout.at(row).at(col);
-	//		if (brick->getIsCrushed())
-	//		{
-	//			continue;
-	//		}
-	//		util::Position brickPosition = bricksPositions.at(row).at(col);
-	//		brick->render(brickPosition, bricksWidthFactor, bricksHeightFactor);
-	//	}
-	//}
+	for (int row = 0; row < static_cast<int>(bricksLayout.size()); row++)
+	{
+		for (int col = 0; col < static_cast<int>(bricksLayout.at(row).size()); col++)
+		{
+			Brick* brick = bricksLayout.at(row).at(col);
+			if (brick->getIsCrushed())
+			{
+				continue;
+			}
+			if (brick->isInCollisionWith(ball))
+			{
+				brick->hit();
+				if (brick->isHitFromBottom)
+				{
+					currentBallDirectionY = 1.f;
+				}
+				else if (brick->isHitFromTop)
+				{
+					currentBallDirectionY = -1.f;
+				}
+
+				if (brick->getIsCrushed())
+				{
+					player->addToScore(brick->getBreakScore());
+					continue;
+				}
+			}
+			util::Position brickPosition = bricksPositions.at(row).at(col);
+			brick->render(brickPosition, bricksWidthFactor, bricksHeightFactor);
+			
+		}
+	}
 }
 
 void Level::handleInput(SDL_Event* e)
@@ -259,10 +290,20 @@ void Level::handleInput(SDL_Event* e)
 			case SDLK_LEFT:
 				player->increaseAcceleration(true);
 				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0.f, 1024.f - 100.f);
+				if (currentPlayerPosition.x == 0.f)
+				{
+					// Player is right next to a wall -> stop accelerating
+					player->turnOffAcceleration();
+				}
 				break;
 			case SDLK_RIGHT:
 				player->increaseAcceleration(false);
 				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0.f, 1024.f - 100.f);
+				if (currentPlayerPosition.x == 1024.f - 100.f)
+				{
+					// Player is right next to a wall -> stop accelerating
+					player->turnOffAcceleration();
+				}
 				break;
 			default:
 				break;

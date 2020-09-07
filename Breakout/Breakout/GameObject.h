@@ -29,12 +29,12 @@ public:
 		// Rectangle - Rectangle collision check
 		if (type == GameObjectType::Rectangle && otherObject->type == GameObjectType::Rectangle)
 		{
-			std::cout << "REC-REC" << std::endl;
+			return rectangleToRectangleCollision(this, otherObject);
 		}
 		// Circle - Circle collision check
 		else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Circle)
 		{
-			std::cout << "CIR-CIR" << std::endl;
+			return circleToCircleCollision(this, otherObject);
 		}
 		// Circle - Rectangle collision check
 		else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Rectangle)
@@ -49,40 +49,91 @@ public:
 
 		return false;
 	}
+	static bool circleToCircleCollision(GameObject* firstCircle, GameObject* secondCircle)
+	{
+		util::Position firstCircleCenter = {
+			firstCircle->screenPosition.x + firstCircle->radius,
+			firstCircle->screenPosition.y + firstCircle->radius
+		};
+
+		util::Position secondCircleCenter = {
+			secondCircle->screenPosition.x + secondCircle->radius,
+			secondCircle->screenPosition.y + secondCircle->radius
+		};
+
+		float distX = firstCircleCenter.x - secondCircleCenter.x;
+		float distY = firstCircleCenter.y - secondCircleCenter.y;
+		float distance = std::sqrt((distX*distX) + (distY*distY));
+		if (distance <= firstCircle->radius + secondCircle->radius)
+		{
+			return true;
+		}
+		return false;
+	}
+	static bool rectangleToRectangleCollision(GameObject* firstRectangle, GameObject* secondRectangle)
+	{
+		if (firstRectangle->screenPosition.x + firstRectangle->width >= secondRectangle->screenPosition.x
+			&& firstRectangle->screenPosition.x <= secondRectangle->screenPosition.x + secondRectangle->width
+			&& firstRectangle->screenPosition.y + firstRectangle->height >= secondRectangle->screenPosition.y
+			&& firstRectangle->screenPosition.y <= secondRectangle->screenPosition.y + secondRectangle->height)
+		{
+			return true;
+		}
+		return false;
+	}
 	static bool circleToRectangleCollision(GameObject* circle, GameObject* rectangle)
 	{
-		float testX = circle->screenPosition.x;
-		float testY = circle->screenPosition.y;
+		util::Position circleCenter = { 
+			circle->screenPosition.x + circle->radius, 
+			circle->screenPosition.y + circle->radius 
+		};
+
+		float testX = circleCenter.x;
+		float testY = circleCenter.y;
 
 		// Left edge
-		if (circle->screenPosition.x < rectangle->screenPosition.x)
+		if (circleCenter.x < rectangle->screenPosition.x)
 		{
 			testX = rectangle->screenPosition.x;
 		}
 		// Right edge
-		else if (circle->screenPosition.x > rectangle->screenPosition.x + rectangle->width)
+		else if (circleCenter.x > rectangle->screenPosition.x + rectangle->width)
 		{
 			testX = rectangle->screenPosition.x + rectangle->width;
 		}
 
 		// Top edge
-		if (circle->screenPosition.y < rectangle->screenPosition.y)
+		if (circleCenter.y < rectangle->screenPosition.y)
 		{
 			testY = rectangle->screenPosition.y;
+			rectangle->isHitFromTop = true;
 		}
 		// Bottom edge
-		else if (circle->screenPosition.y > rectangle->screenPosition.y + rectangle->height)
+		else if (circleCenter.y > rectangle->screenPosition.y + rectangle->height)
 		{
 			testY = rectangle->screenPosition.y + rectangle->height;
+			rectangle->isHitFromBottom = true;
 		}
 
-		float distX = circle->screenPosition.x - testX;
-		float distY = circle->screenPosition.y - testY;
+		float distX = circleCenter.x - testX;
+		float distY = circleCenter.y - testY;
 		float distance = std::sqrt((distX * distX) + (distY * distY));
 		if (distance <= circle->radius)
 		{
+			if (circleCenter.x <= rectangle->screenPosition.x + 15.f) 
+			{
+				rectangle->isHitFromLeftEdge = true;
+			}
+			else if (circleCenter.x >= rectangle->screenPosition.x + rectangle->width - 15.f)
+			{
+				rectangle->isHitFromRightEdge = true;
+			}
 			return true;
 		}
+		rectangle->isHitFromLeftEdge = false;
+		rectangle->isHitFromRightEdge = false;
+		rectangle->isHitFromTop = false;
+		rectangle->isHitFromBottom = false;
 		return false;
 	}
 	/// <summary>
@@ -98,6 +149,10 @@ public:
 	/// </summary>
 	SDL_Renderer* renderer;
 
+	bool isHitFromLeftEdge = false;
+	bool isHitFromRightEdge = false;
+	bool isHitFromTop = false;
+	bool isHitFromBottom = false;
 	float width;
 	float height;
 	float radius = 0.f;

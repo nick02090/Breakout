@@ -83,9 +83,9 @@ public:
 	{
 		acceleration = 0.f;
 	}
-	inline void increaseAcceleration(bool isNegative)
+	inline void increaseAcceleration(bool isNegativeXAxis)
 	{
-		if (isNegative)
+		if (isNegativeXAxis)
 		{
 			velocityMultiplier = -1.f;
 		} 

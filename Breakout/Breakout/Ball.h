@@ -35,8 +35,8 @@ public:
 
 		// Create a rect to position the texture
 		SDL_FRect rect;
-		rect.x = util::clamp(screenPosition.x, 0.f, 1024.f - 20.f);
-		rect.y = util::clamp(screenPosition.y, 0.f, 768.f - 105.f);
+		rect.x = screenPosition.x;
+		rect.y = screenPosition.y;
 		rect.w = width / widthFactor;
 		rect.h = height / heightFactor;
 
@@ -63,7 +63,7 @@ public:
 	}
 	inline bool hasFellDown()
 	{
-		if (screenPosition.y >= 768.f - 105.f)
+		if (screenPosition.y >= 660.f)
 		{
 			return true;
 		}
@@ -71,8 +71,9 @@ public:
 	}
 	inline float getVelocity()
 	{
-		return 0.07f;
+		return velocity;
 	}
+	float velocity = 0.1f;
 private:
 	const std::string TEXTURE_PATH = "GameObjects/Ball.png";
 

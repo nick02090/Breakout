@@ -89,7 +89,7 @@ private:
 	Player* player;
 	Ball* ball;
 
-	util::Position currentPlayerPosition = {445.f, 648.f};
+	util::Position currentPlayerPosition = {445.f, 660.f};
 	util::Position currentBallPosition = {485.f, 618.f};
 	util::Position firstBrickPosition = {15.f, 15.f};
 	std::vector<std::vector<util::Position>> bricksPositions;
