@@ -47,22 +47,6 @@ bool StoryGameScene::loadMedia()
 		success = false;
 	}
 
-	// Load black button background
-	blackButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/BlackButton.png");
-	if (blackButtonTexture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		success = false;
-	}
-
-	// Load white button background
-	whiteButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/WhiteButton.png");
-	if (whiteButtonTexture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		success = false;
-	}
-
 	// Load the font
 	font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HEADING_FONT_SIZE);
 	if (font == NULL)
@@ -71,56 +55,22 @@ bool StoryGameScene::loadMedia()
 		success = false;
 	}
 
+	// Load media for narration menu
+	narrationMenu->loadMedia();
+
 	return success;
 }
 
 void StoryGameScene::narrationHandleInput(SDL_Event* e)
 {
-	// Handle events on the queue
-	while (SDL_PollEvent(e) != 0)
+	narrationMenu->handleInput(e);
+
+	shouldQuit = narrationMenu->hasRequestedQuit();
+
+	int requestedElementIndex = narrationMenu->confirmSelection();
+	if (requestedElementIndex >= 0)
 	{
-		// User request quit
-		if (e->type == SDL_QUIT) {
-			shouldQuit = true;
-		}
-		// User presses a key
-		if (e->type == SDL_KEYDOWN)
-		{
-			switch (e->key.keysym.sym)
-			{
-			case SDLK_RETURN:
-				currentChapterLine = chapters[currentChapterIndex]->getNextLine();
-				if (currentChapterLine._Equal("PLAY"))
-				{
-					// Change state for playing the level
-					storyState = StoryState::LEVEL;
-					// Initialize the level
-					StoryChapter* chapter = chapters[currentChapterIndex];
-					currentLevel = new Level(chapter->getPathToLevel(), renderer, player, chapter->getTitle(), true);
-					// Load the level media
-					if (!currentLevel->loadMedia())
-					{
-						std::cout << "Failed to load the level media!" << std::endl;
-					}
-				}
-				else if (currentChapterLine._Equal("END"))
-				{
-					currentChapterIndex += 1;
-					if (currentChapterIndex == 3)
-					{
-						// Finished all of the chapters, return to the MainMenu
-						nextGameState = GameState::MAIN_MENU;
-					}
-					else
-					{
-						currentChapterLine = chapters[currentChapterIndex]->getNextLine();
-					}
-				}
-				break;
-			default:
-				break;
-			}
-		}
+		std::invoke(narrationMenuRequests[requestedElementIndex], this);
 	}
 }
 
@@ -137,6 +87,8 @@ void StoryGameScene::levelHandleInput(SDL_Event* e)
 		storyState = StoryState::NARRATION;
 		// Update chapter line
 		currentChapterLine = chapters[currentChapterIndex]->getNextLine();
+		// Show menu
+		narrationMenu->show();
 	}
 	// Check if level requested to quit the whole game
 	if (currentLevel->hasRequestedQuit())
@@ -169,13 +121,49 @@ void StoryGameScene::narrationUpdate()
 	util::drawText(renderer, font, white, currentChapterLine.c_str(), {screenWidth/10.f, screenHeight/2.f}, util::PARAGRAPH_FONT_SIZE);
 
 	// Draw confirm button and it's text
-	SDL_Color black = { 0, 0, 0 };
-	util::drawButton(renderer, whiteButtonTexture, { 750.f, 700.f });
-	util::drawText(renderer, font, black, "OK", { 850.f, 720.f }, util::HEADING_FONT_SIZE);
+	narrationMenu->update();
 }
 
 void StoryGameScene::levelUpdate()
 {
 	// Render the level on a screen
 	currentLevel->update();
+}
+
+void StoryGameScene::ok()
+{
+	narrationMenu->reset();
+
+	currentChapterLine = chapters[currentChapterIndex]->getNextLine();
+	if (currentChapterLine._Equal("PLAY"))
+	{
+		// Change state for playing the level
+		storyState = StoryState::LEVEL;
+		// Initialize the level
+		StoryChapter* chapter = chapters[currentChapterIndex];
+		currentLevel = new Level(chapter->getPathToLevel(), renderer, player, chapter->getTitle(), true);
+		// Load the level media
+		if (!currentLevel->loadMedia())
+		{
+			std::cout << "Failed to load the level media!" << std::endl;
+		}
+	}
+	else if (currentChapterLine._Equal("END"))
+	{
+		currentChapterIndex += 1;
+		if (currentChapterIndex == 3)
+		{
+			// Finished all of the chapters, return to the MainMenu
+			nextGameState = GameState::MAIN_MENU;
+		}
+		else
+		{
+			currentChapterLine = chapters[currentChapterIndex]->getNextLine();
+			narrationMenu->show();
+		}
+	}
+	else
+	{
+		narrationMenu->show();
+	}
 }

@@ -42,6 +42,10 @@ public:
 		currentChapterLine = currentChapter->getNextLine();
 		currentLevel = NULL;
 
+		// Initialize menu for narration mode
+		narrationMenu = new Menu(narrationMenuButtons, renderer);
+		narrationMenu->show();
+
 		// Initialize font
 		font = NULL;
 	}
@@ -70,6 +74,7 @@ private:
 	void levelHandleInput(SDL_Event* e);
 	void narrationUpdate();
 	void levelUpdate();
+	void ok();
 
 	const std::string FIRST_CHAPTER_PATH = "Chapters/Chapter_I.xml";
 	const std::string SECOND_CHAPTER_PATH = "Chapters/Chapter_II.xml";
@@ -91,6 +96,16 @@ private:
 
 	Level* currentLevel;
 	Player* player;
+
+	Menu* narrationMenu;
+	typedef void (StoryGameScene::* narrationMenuRequest)(void);
+	narrationMenuRequest narrationMenuRequests[1] = { &StoryGameScene::ok };
+
+	const util::Position OK_BUTTON_POSITION = { 750.f, 700.f };
+	const util::Position OK_TEXT_POSITION = { 850.f, 720.f };
+	std::vector<MenuButton> narrationMenuButtons{
+		{ OK_BUTTON_POSITION, OK_TEXT_POSITION, "OK" }
+	};
 
 	TTF_Font* font;
 };
