@@ -2,6 +2,7 @@
 #include "Utilities.h"
 #include "Level.h"
 #include "Player.h"
+#include "Menu.h"
 
 enum class GameState
 {

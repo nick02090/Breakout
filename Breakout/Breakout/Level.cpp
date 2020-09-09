@@ -1,11 +1,20 @@
 #include "Level.h"
 
-Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::string _name)
+Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::string _name, bool _isRetryable) : 
+	renderer(_renderer), player(_player), name(_name), isRetryable(_isRetryable)
 {
-	renderer = _renderer;
-	player = _player;
+	// Initialize ball for the level
 	ball = new Ball(renderer);
-	name = _name;
+
+	// Initialize pause menu
+	if (isRetryable)
+	{
+		pauseMenu = new Menu(retryablePauseMenuButtons, renderer);
+	} 
+	else
+	{
+		pauseMenu = new Menu(nonRetryablePauseMenuButtons, renderer);
+	}
 
 	// Initialize member variables via xmlDocument
 	tinyxml2::XMLDocument doc;
@@ -57,6 +66,8 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 			nameComment = nextSibling->ToComment();
 			brickElement = nameComment->NextSiblingElement();
 		}
+		Brick* emptyBrick = new Brick(_renderer, "EmptyBrick", "_");
+		bricks.push_back(emptyBrick);
 
 		// Calculate bricks screen factors
 		float neededBrickWidth = columnCount * BRICK_WIDHT + (columnCount - 1) * rowSpacing;
@@ -91,7 +102,14 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 							int col = static_cast<int>(bricksRow.size());
 							float x = firstBrickPosition.x + col * (50.f + columnSpacing) / bricksWidthFactor;
 							float y = firstBrickPosition.y + row * (20.f + rowSpacing) / bricksHeightFactor;
-							bricksRow.push_back(new Brick(brick));
+							if (brick->getIsEmpty())
+							{
+								bricksRow.push_back(new Brick(_renderer, "EmptyBrick", "_"));
+							}
+							else 
+							{
+								bricksRow.push_back(new Brick(brick));
+							}
 							bricksRowPositions.push_back({x, y});
 							break;
 						}
@@ -122,22 +140,6 @@ bool Level::loadMedia()
 		success = false;
 	}
 
-	// Load black button background
-	blackButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/BlackButton.png");
-	if (blackButtonTexture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		success = false;
-	}
-
-	// Load white button background
-	whiteButtonTexture = util::loadTexture(renderer, "UI/Textures/Buttons/WhiteButton.png");
-	if (whiteButtonTexture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		success = false;
-	}
-
 	// Load HUD overlay
 	HUDTexture = util::loadTexture(renderer, HUDTexturePath);
 	if (HUDTexture == NULL)
@@ -153,6 +155,9 @@ bool Level::loadMedia()
 		std::cout << "Failed to load font! SDL_Error: " << TTF_GetError() << std::endl;
 		success = false;
 	}
+
+	// Load media for the pause menu
+	pauseMenu->loadMedia();
 
 	return success;
 }
@@ -182,6 +187,46 @@ void Level::update()
 
 	// Draw the player
 	player->render(currentPlayerPosition);
+
+	// Level is paused -> just draw the ball and bricks without updating it's location and without collision checks
+	if (levelState == LevelState::PAUSED)
+	{
+		// Draw the ball
+		ball->render(currentBallPosition);
+
+		// Draw the bricks
+		for (int row = 0; row < static_cast<int>(bricksLayout.size()); row++)
+		{
+			for (int col = 0; col < static_cast<int>(bricksLayout.at(row).size()); col++)
+			{
+				Brick* brick = bricksLayout.at(row).at(col);
+				if (brick->getIsEmpty())
+				{
+					continue;
+				}
+				if (brick->getIsCrushed())
+				{
+					continue;
+				}
+				util::Position brickPosition = bricksPositions.at(row).at(col);
+				brick->render(brickPosition, bricksWidthFactor, bricksHeightFactor);
+			}
+		}
+
+		// Draw pause overlay background
+		SDL_Rect fillRect = { 0, 0, 1024, 768 };
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BlendMode::SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x33);
+		SDL_RenderFillRect(renderer, &fillRect);
+
+		// Draw pause text
+		util::drawText(renderer, font, white, "PAUSED", {425.f, 150.f}, util::HEADING_FONT_SIZE);
+
+		// Draw pause menu
+		pauseMenu->update();
+
+		return;
+	}
 
 	// Draw the ball
 	currentBallPosition.x = util::clamp(currentBallPosition.x + currentBallDirectionX * (float)ball->getVelocity(), 0.f, 1024.f - 20.f);
@@ -236,11 +281,16 @@ void Level::update()
 	}
 
 	// Draw bricks
+	int numberOfRemainingBricks = 0;
 	for (int row = 0; row < static_cast<int>(bricksLayout.size()); row++)
 	{
 		for (int col = 0; col < static_cast<int>(bricksLayout.at(row).size()); col++)
 		{
 			Brick* brick = bricksLayout.at(row).at(col);
+			if (brick->getIsEmpty())
+			{
+				continue;
+			}
 			if (brick->getIsCrushed())
 			{
 				continue;
@@ -265,13 +315,45 @@ void Level::update()
 			}
 			util::Position brickPosition = bricksPositions.at(row).at(col);
 			brick->render(brickPosition, bricksWidthFactor, bricksHeightFactor);
-			
+			if (brick->isBreakable())
+			{
+				numberOfRemainingBricks++;
+			}
 		}
+	}
+	if (numberOfRemainingBricks == 0)
+	{
+		levelState = LevelState::END;
 	}
 }
 
 void Level::handleInput(SDL_Event* e)
 {
+	if (levelState == LevelState::PAUSED)
+	{
+		pauseMenu->handleInput(e);
+
+		if (pauseMenu->hasRequestedQuit())
+		{
+			levelState = LevelState::QUIT;
+		}
+
+		int requestedElementIndex = pauseMenu->confirmSelection();
+		if (requestedElementIndex >= 0)
+		{
+			if (isRetryable)
+			{
+				std::invoke(retryablePauseMenuRequests[requestedElementIndex], this);
+			}
+			else
+			{
+				std::invoke(nonRetryablePauseMenuRequests[requestedElementIndex], this);
+			}
+		}
+
+		return;
+	}
+
 	// Handle events on the queue
 	while (SDL_PollEvent(e) != 0)
 	{
@@ -286,6 +368,7 @@ void Level::handleInput(SDL_Event* e)
 			{
 			case SDLK_ESCAPE:
 				levelState = LevelState::PAUSED;
+				pauseMenu->show();
 				break;
 			case SDLK_LEFT:
 				player->increaseAcceleration(true);
@@ -325,4 +408,40 @@ void Level::handleInput(SDL_Event* e)
 			}
 		}
 	}
+}
+
+void Level::resume()
+{
+	levelState = LevelState::PLAYING;
+	pauseMenu->reset();
+}
+
+void Level::retry()
+{
+	// Reset all of the bricks properties
+	for (int row = 0; row < static_cast<int>(bricksLayout.size()); row++)
+	{
+		for (int col = 0; col < static_cast<int>(bricksLayout.at(row).size()); col++)
+		{
+			Brick* brick = bricksLayout.at(row).at(col);
+			brick->reset();
+		}
+	}
+
+	// Reset player properties
+	player->reset();
+	currentPlayerPosition = { 445.f, 660.f };
+
+	// Reset ball properties
+	currentBallDirectionX = 1.f;
+	currentBallDirectionY = -1.f; // TODO: move this to Ball class
+	currentBallPosition = { 485.f, 618.f };
+
+	levelState = LevelState::PLAYING;
+	pauseMenu->reset();
+}
+
+void Level::quit()
+{
+	levelState = LevelState::MAINMENU;
 }

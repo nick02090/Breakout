@@ -17,7 +17,19 @@ public:
 		width = WIDTH;
 		height = HEIGHT;
 	}
-	Brick(Brick* _brick) : Brick(_brick->renderer, _brick->name, _brick->ID, _brick->texturePath, _brick->hitPoints, _brick->hitSoundPath, _brick->breakSoundPath, _brick->breakScore) {}
+	Brick(Brick* _brick) : Brick(_brick->renderer, _brick->name, _brick->ID, _brick->texturePath, _brick->hitPoints, _brick->hitSoundPath, _brick->breakSoundPath, _brick->breakScore) 
+	{
+		isEmpty = _brick->isEmpty;
+	}
+	Brick(SDL_Renderer* _renderer, std::string _name, std::string _ID) : GameObject(_renderer), name(_name), ID(_ID) 
+	{
+		type = GameObjectType::Rectangle;
+		timesHit = 0;
+		texture = NULL;
+		breakScore = 0;
+		hitPoints = 0;
+		isEmpty = true;
+	}
 	~Brick()
 	{
 		// Free loaded images
@@ -54,6 +66,10 @@ public:
 	{
 		return isCrushed;
 	}
+	inline bool getIsEmpty()
+	{
+		return isEmpty;
+	}
 	/// <summary>
 	/// Returns score for breaking this brick.
 	/// </summary>
@@ -69,6 +85,15 @@ public:
 	inline std::string getID()
 	{
 		return ID;
+	}
+	inline bool isBreakable()
+	{
+		return hitPoints > 0;
+	}
+	inline void reset()
+	{
+		timesHit = 0;
+		isCrushed = false;
 	}
 private:
 	std::string name;
@@ -90,6 +115,10 @@ private:
 	/// True if it is crushed down
 	/// </summary>
 	bool isCrushed = false;
+	/// <summary>
+	/// True if it represents an empty space on the screen and shouldn't be rendered or used in any way
+	/// </summary>
+	bool isEmpty = false;
 
 	SDL_Texture* texture;
 };

@@ -1,12 +1,12 @@
 #pragma once
-#include <vector>
-#include "Brick.h"
-#include "tinyxml2.h"
 #include <sstream>
 #include <string>
+#include "tinyxml2.h"
 #include "Utilities.h"
+#include "Brick.h"
 #include "Player.h"
 #include "Ball.h"
+#include "Menu.h"
 namespace util
 {
 	class Array2D;
@@ -24,16 +24,12 @@ public:
 		MAINMENU
 	};
 
-	Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::string _name);
+	Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::string _name, bool _isRetryble);
 	~Level()
 	{
 		// Free loaded images
 		SDL_DestroyTexture(backgroundTexture);
 		backgroundTexture = NULL;
-		SDL_DestroyTexture(blackButtonTexture);
-		blackButtonTexture = NULL;
-		SDL_DestroyTexture(whiteButtonTexture);
-		whiteButtonTexture = NULL;
 		SDL_DestroyTexture(HUDTexture);
 		HUDTexture = NULL;
 
@@ -69,6 +65,10 @@ public:
 		return levelState == LevelState::MAINMENU;
 	}
 private:
+	void resume();
+	void retry();
+	void quit();
+
 	const std::string HUDTexturePath = "Textures/LevelHUD.png";
 	
 	const float MAX_BRICKS_WIDTH = 994.f;
@@ -102,9 +102,32 @@ private:
 	LevelState levelState = LevelState::PLAYING;
 
 	SDL_Texture* backgroundTexture = NULL;
-	SDL_Texture* blackButtonTexture = NULL;
-	SDL_Texture* whiteButtonTexture = NULL;
 	SDL_Texture* HUDTexture = NULL;
+
+	const util::Position RESUME_BUTTON_POSITION = { 365.f, 250.f };
+	const util::Position RETRY_BUTTON_POSITION = { 365.f, 350.f };
+	const util::Position QUIT_BUTTON_POSITION = { 365.f, 450.f };
+
+	const util::Position RESUME_TEXT_POSITION = { 420.f, 270.f };
+	const util::Position RETRY_TEXT_POSITION = { 440.f, 370.f };
+	const util::Position QUIT_TEXT_POSITION = { 450.f, 470.f };
+
+	Menu* pauseMenu;
+	std::vector<MenuButton> retryablePauseMenuButtons {
+		{ RESUME_BUTTON_POSITION, RESUME_TEXT_POSITION, "RESUME" },
+		{ RETRY_BUTTON_POSITION, RETRY_TEXT_POSITION, "RETRY" },
+		{ QUIT_BUTTON_POSITION, QUIT_TEXT_POSITION, "QUIT" }
+	};
+	std::vector<MenuButton> nonRetryablePauseMenuButtons{
+		{ RESUME_BUTTON_POSITION, RESUME_TEXT_POSITION, "RESUME" },
+		{ RETRY_BUTTON_POSITION, RETRY_TEXT_POSITION, "QUIT" }
+	};
+
+	typedef void (Level::* pauseMenuRequest)(void);
+	pauseMenuRequest retryablePauseMenuRequests[3] = { &Level::resume, &Level::retry, &Level::quit };
+	pauseMenuRequest nonRetryablePauseMenuRequests[2] = { &Level::resume, &Level::quit };
+
+	bool isRetryable;
 
 	TTF_Font* font = NULL;
 

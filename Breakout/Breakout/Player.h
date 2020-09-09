@@ -79,6 +79,13 @@ public:
 	{
 		return currentLives == 0;
 	}
+	inline void reset()
+	{
+		currentLives = MAX_LIVES;
+		currentScore = 0;
+		acceleration = 0.f;
+		velocity = MIN_VELOCITY;
+	}
 	inline void turnOffAcceleration()
 	{
 		acceleration = 0.f;

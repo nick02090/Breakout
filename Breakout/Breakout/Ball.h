@@ -73,7 +73,7 @@ public:
 	{
 		return velocity;
 	}
-	float velocity = 0.1f;
+	float velocity = 0.08f;
 private:
 	const std::string TEXTURE_PATH = "GameObjects/Ball.png";
 

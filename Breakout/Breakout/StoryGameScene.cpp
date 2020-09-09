@@ -96,7 +96,7 @@ void StoryGameScene::narrationHandleInput(SDL_Event* e)
 					storyState = StoryState::LEVEL;
 					// Initialize the level
 					StoryChapter* chapter = chapters[currentChapterIndex];
-					currentLevel = new Level(chapter->getPathToLevel(), renderer, player, chapter->getTitle());
+					currentLevel = new Level(chapter->getPathToLevel(), renderer, player, chapter->getTitle(), true);
 					// Load the level media
 					if (!currentLevel->loadMedia())
 					{

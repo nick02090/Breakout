@@ -151,6 +151,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="MainMenuGameScene.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="StoryGameScene.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="MainMenuGameScene.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="StoryChapter.h" />
     <ClInclude Include="StoryGameScene.h" />
