@@ -14,7 +14,7 @@ Game::Game()
 	else
 	{
 		// Initialize startup scene (MainMenu)
-		gameState = GameState::MAIN_MENU;
+		gameState = GameState::MainMenu;
 		initScene();
 		// Hide cursor
 		SDL_ShowCursor(SDL_DISABLE);
@@ -158,16 +158,16 @@ void Game::initScene()
 
 	switch (gameState)
 	{
-	case GameState::MAIN_MENU:
+	case GameState::MainMenu:
 		gameScene = new MainMenuGameScene(renderer);
 		break;
-	case GameState::STORY:
+	case GameState::Story:
 		gameScene = new StoryGameScene(renderer);
 		break;
-	case GameState::ARCADE:
+	case GameState::Arcade:
 		gameScene = new ArcadeGameScene(renderer);
 		break;
-	case GameState::COOP:
+	case GameState::Coop:
 		gameScene = new COOPGameScene(renderer);
 		break;
 	default:

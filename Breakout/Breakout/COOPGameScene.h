@@ -8,16 +8,19 @@ public:
 	{
 	};
 
-	COOPGameScene(SDL_Renderer* _renderer) : GameScene(_renderer)
-	{
-
-	}
-	~COOPGameScene()
-	{
-
-	}
+	COOPGameScene(SDL_Renderer* _renderer);
+	~COOPGameScene();
+	/// <summary>
+	/// Updates the screen window.
+	/// </summary>
 	void update();
+	/// <summary>
+	/// Handles input.
+	/// </summary>
 	void handleInput(SDL_Event* e);
+	/// <summary>
+	/// Loads required media.
+	/// </summary>
 	bool loadMedia();
 private:
 };

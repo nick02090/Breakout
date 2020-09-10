@@ -8,16 +8,19 @@ public:
 	{
 	};
 
-	ArcadeGameScene(SDL_Renderer* _renderer) : GameScene(_renderer)
-	{
-
-	}
-	~ArcadeGameScene()
-	{
-
-	}
+	ArcadeGameScene(SDL_Renderer* _renderer);
+	~ArcadeGameScene();
+	/// <summary>
+	/// Updates the screen window.
+	/// </summary>
 	void update();
+	/// <summary>
+	/// Handles input.
+	/// </summary>
 	void handleInput(SDL_Event* e);
+	/// <summary>
+	/// Loads required media.
+	/// </summary>
 	bool loadMedia();
 private:
 };

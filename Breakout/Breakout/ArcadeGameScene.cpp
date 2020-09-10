@@ -1,5 +1,13 @@
 #include "ArcadeGameScene.h"
 
+ArcadeGameScene::ArcadeGameScene(SDL_Renderer* _renderer) : GameScene(_renderer)
+{
+}
+
+ArcadeGameScene::~ArcadeGameScene()
+{
+}
+
 void ArcadeGameScene::update()
 {
 }

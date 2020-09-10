@@ -1,15 +1,65 @@
 #include "StoryGameScene.h"
 
+StoryGameScene::StoryGameScene(SDL_Renderer* _renderer) : GameScene(_renderer)
+{
+	// Initialize member variables
+	storyState = StoryState::Narration;
+
+	// Initialize the player
+	player = new Player(_renderer);
+
+	// Initialize textures
+	backgroundTransitionTexture = NULL;
+	blackButtonTexture = NULL;
+	whiteButtonTexture = NULL;
+
+	// Initialize chapters
+	firstChapter = new StoryChapter(FirstChapterPath);
+	secondChapter = new StoryChapter(SecondChapterPath);
+	thirdChapter = new StoryChapter(ThirdChapterPath);
+	chapters[0] = firstChapter;
+	chapters[1] = secondChapter;
+	chapters[2] = thirdChapter;
+	StoryChapter* currentChapter = chapters[currentChapterIndex];
+	currentChapterLine = currentChapter->getNextLine();
+	currentLevel = NULL;
+
+	// Initialize menu for narration mode
+	narrationMenu = new Menu(narrationMenuButtons, renderer);
+	narrationMenu->show();
+
+	// Initialize font
+	font = NULL;
+}
+
+StoryGameScene::~StoryGameScene()
+{
+	// Free loaded images
+	SDL_DestroyTexture(backgroundTransitionTexture);
+	backgroundTransitionTexture = NULL;
+	SDL_DestroyTexture(blackButtonTexture);
+	blackButtonTexture = NULL;
+	SDL_DestroyTexture(whiteButtonTexture);
+	whiteButtonTexture = NULL;
+
+	// Delete the player
+	delete player;
+
+	// Free loaded font
+	TTF_CloseFont(font);
+	font = NULL;
+}
+
 void StoryGameScene::update()
 {
 	switch (storyState)
 	{
 	// Render update if story is in narration mode
-	case StoryGameScene::StoryState::NARRATION:
+	case StoryGameScene::StoryState::Narration:
 		narrationUpdate();
 		break;
 	// Render update if story is in playing level mode
-	case StoryGameScene::StoryState::LEVEL:
+	case StoryGameScene::StoryState::Level:
 		levelUpdate();
 		break;
 	default:
@@ -22,11 +72,11 @@ void StoryGameScene::handleInput(SDL_Event* e)
 	switch (storyState)
 	{
 	// Handle input if story is in narration mode
-	case StoryGameScene::StoryState::NARRATION:
+	case StoryGameScene::StoryState::Narration:
 		narrationHandleInput(e);
 		break;
 	// Handle input if story is in playing level mode
-	case StoryGameScene::StoryState::LEVEL:
+	case StoryGameScene::StoryState::Level:
 		levelHandleInput(e);
 		break;
 	default:
@@ -84,7 +134,7 @@ void StoryGameScene::levelHandleInput(SDL_Event* e)
 		// Delete the level
 		delete currentLevel;
 		// Finish the chapter narration
-		storyState = StoryState::NARRATION;
+		storyState = StoryState::Narration;
 		// Update chapter line
 		currentChapterLine = chapters[currentChapterIndex]->getNextLine();
 		// Show menu
@@ -104,7 +154,7 @@ void StoryGameScene::levelHandleInput(SDL_Event* e)
 		// Delete the level
 		delete currentLevel;
 		// Request MainMenu
-		nextGameState = GameState::MAIN_MENU;
+		nextGameState = GameState::MainMenu;
 	}
 }
 
@@ -138,7 +188,7 @@ void StoryGameScene::ok()
 	if (currentChapterLine._Equal("PLAY"))
 	{
 		// Change state for playing the level
-		storyState = StoryState::LEVEL;
+		storyState = StoryState::Level;
 		// Initialize the level
 		StoryChapter* chapter = chapters[currentChapterIndex];
 		currentLevel = new Level(chapter->getPathToLevel(), renderer, player, chapter->getTitle(), true);
@@ -154,7 +204,7 @@ void StoryGameScene::ok()
 		if (currentChapterIndex == 3)
 		{
 			// Finished all of the chapters, return to the MainMenu
-			nextGameState = GameState::MAIN_MENU;
+			nextGameState = GameState::MainMenu;
 		}
 		else
 		{

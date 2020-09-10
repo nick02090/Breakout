@@ -70,10 +70,10 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 		bricks.push_back(emptyBrick);
 
 		// Calculate bricks screen factors
-		float neededBrickWidth = columnCount * BRICK_WIDHT + (columnCount - 1) * rowSpacing;
-		float neededBrickHeight = rowCount * BRICK_HEIGHT + (rowCount - 1) * columnSpacing;
-		bricksWidthFactor = neededBrickWidth / MAX_BRICKS_WIDTH;
-		bricksHeightFactor = neededBrickHeight / MAX_BRICKS_HEIGHT;
+		float neededBrickWidth = columnCount * BrickWidth + (columnCount - 1) * rowSpacing;
+		float neededBrickHeight = rowCount * BrickHeight + (rowCount - 1) * columnSpacing;
+		bricksWidthFactor = neededBrickWidth / MaxBricksWidth;
+		bricksHeightFactor = neededBrickHeight / MaxBricksHeight;
 
 		// Get Bricks node and it'a attributes
 		tinyxml2::XMLElement* bricksElement = brickTypesElement->NextSiblingElement();
@@ -97,7 +97,7 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 				{
 					for (Brick* brick : bricks)
 					{
-						if (brick->getID()._Equal(id))
+						if (brick->getId()._Equal(id))
 						{
 							int col = static_cast<int>(bricksRow.size());
 							float x = firstBrickPosition.x + col * (50.f + columnSpacing) / bricksWidthFactor;
@@ -124,7 +124,19 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 	{
 		std::cout << "Unable to load XML file " << path.c_str() << std::endl;
 	}
+}
 
+Level::~Level()
+{
+	// Free loaded images
+	SDL_DestroyTexture(backgroundTexture);
+	backgroundTexture = NULL;
+	SDL_DestroyTexture(HUDTexture);
+	HUDTexture = NULL;
+
+	// Free loaded font
+	TTF_CloseFont(font);
+	font = NULL;
 }
 
 bool Level::loadMedia()
@@ -189,7 +201,7 @@ void Level::update()
 	player->render(currentPlayerPosition);
 
 	// Level is paused -> just draw the ball and bricks without updating it's location and without collision checks
-	if (levelState == LevelState::PAUSED)
+	if (levelState == LevelState::Paused)
 	{
 		// Draw the ball
 		ball->render(currentBallPosition);
@@ -240,10 +252,10 @@ void Level::update()
 		Ball::WallHit wallHit = ball->getPreviousWallHit();
 		switch (wallHit)
 		{
-		case Ball::WallHit::HORIZIONTAL:
+		case Ball::WallHit::Horizontal:
 			currentBallDirectionX *= -1.f;
 			break;
-		case Ball::WallHit::VERTICAL:
+		case Ball::WallHit::Vertical:
 			currentBallDirectionY *= -1.f;
 			break;
 		default:
@@ -270,11 +282,11 @@ void Level::update()
 			currentBallDirectionX = player->getVelocity() >= 0 ? 1.f : -1.f;
 		}
 		// Ball hits the very edge of the player -> bounce off in the way of the edge
-		else if (player->isHitFromLeftEdge)
+		else if (player->getHorizontalHitPosition() == GameObject::HitPosition::LeftEdge)
 		{
 			currentBallDirectionX = -1.f;
 		}
-		else if (player->isHitFromRightEdge)
+		else if (player->getHorizontalHitPosition() == GameObject::HitPosition::RightEdge)
 		{
 			currentBallDirectionX = 1.f;
 		}
@@ -298,11 +310,11 @@ void Level::update()
 			if (brick->isInCollisionWith(ball))
 			{
 				brick->hit();
-				if (brick->isHitFromBottom)
+				if (brick->getVerticalHitPosition() == GameObject::HitPosition::Bottom)
 				{
 					currentBallDirectionY = 1.f;
 				}
-				else if (brick->isHitFromTop)
+				else if (brick->getVerticalHitPosition() == GameObject::HitPosition::Top)
 				{
 					currentBallDirectionY = -1.f;
 				}
@@ -323,19 +335,19 @@ void Level::update()
 	}
 	if (numberOfRemainingBricks == 0)
 	{
-		levelState = LevelState::END;
+		levelState = LevelState::End;
 	}
 }
 
 void Level::handleInput(SDL_Event* e)
 {
-	if (levelState == LevelState::PAUSED)
+	if (levelState == LevelState::Paused)
 	{
 		pauseMenu->handleInput(e);
 
 		if (pauseMenu->hasRequestedQuit())
 		{
-			levelState = LevelState::QUIT;
+			levelState = LevelState::Quit;
 		}
 
 		int requestedElementIndex = pauseMenu->confirmSelection();
@@ -359,7 +371,7 @@ void Level::handleInput(SDL_Event* e)
 	{
 		// User request quit
 		if (e->type == SDL_QUIT) {
-			levelState = LevelState::QUIT;
+			levelState = LevelState::Quit;
 		}
 		// User presses a key
 		if (e->type == SDL_KEYDOWN)
@@ -367,7 +379,7 @@ void Level::handleInput(SDL_Event* e)
 			switch (e->key.keysym.sym)
 			{
 			case SDLK_ESCAPE:
-				levelState = LevelState::PAUSED;
+				levelState = LevelState::Paused;
 				pauseMenu->show();
 				break;
 			case SDLK_LEFT:
@@ -410,9 +422,24 @@ void Level::handleInput(SDL_Event* e)
 	}
 }
 
+bool Level::hasEnded()
+{
+	return levelState == LevelState::End;
+}
+
+bool Level::hasRequestedQuit()
+{
+	return levelState == LevelState::Quit;
+}
+
+bool Level::hasRequestedMainMenu()
+{
+	return levelState == LevelState::MainMenu;
+}
+
 void Level::resume()
 {
-	levelState = LevelState::PLAYING;
+	levelState = LevelState::Playing;
 	pauseMenu->reset();
 }
 
@@ -437,11 +464,11 @@ void Level::retry()
 	currentBallDirectionY = -1.f; // TODO: move this to Ball class
 	currentBallPosition = { 485.f, 618.f };
 
-	levelState = LevelState::PLAYING;
+	levelState = LevelState::Playing;
 	pauseMenu->reset();
 }
 
 void Level::quit()
 {
-	levelState = LevelState::MAINMENU;
+	levelState = LevelState::MainMenu;
 }

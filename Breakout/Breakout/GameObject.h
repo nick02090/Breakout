@@ -10,8 +10,16 @@ public:
 		Rectangle
 	};
 
-	GameObject(SDL_Renderer* _renderer) : renderer(_renderer) {}
+	enum class HitPosition 
+	{
+		LeftEdge,
+		RightEdge,
+		Top,
+		Bottom,
+		Default
+	};
 
+	GameObject(SDL_Renderer* _renderer);
 	/// <summary>
 	/// Renders an object on the screen by creating a copy of the object.
 	/// </summary>
@@ -24,135 +32,45 @@ public:
 	/// </summary>
 	/// <param name="otherObject">The other object</param>
 	/// <returns></returns>
-	bool isInCollisionWith(GameObject* otherObject)
-	{
-		// Rectangle - Rectangle collision check
-		if (type == GameObjectType::Rectangle && otherObject->type == GameObjectType::Rectangle)
-		{
-			return rectangleToRectangleCollision(this, otherObject);
-		}
-		// Circle - Circle collision check
-		else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Circle)
-		{
-			return circleToCircleCollision(this, otherObject);
-		}
-		// Circle - Rectangle collision check
-		else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Rectangle)
-		{
-			return circleToRectangleCollision(this, otherObject);
-		}
-		// Rectangle - Circle check
-		else if (type == GameObjectType::Rectangle && otherObject->type == GameObjectType::Circle)
-		{
-			return circleToRectangleCollision(otherObject, this);
-		}
-
-		return false;
-	}
-	static bool circleToCircleCollision(GameObject* firstCircle, GameObject* secondCircle)
-	{
-		util::Position firstCircleCenter = {
-			firstCircle->screenPosition.x + firstCircle->radius,
-			firstCircle->screenPosition.y + firstCircle->radius
-		};
-
-		util::Position secondCircleCenter = {
-			secondCircle->screenPosition.x + secondCircle->radius,
-			secondCircle->screenPosition.y + secondCircle->radius
-		};
-
-		float distX = firstCircleCenter.x - secondCircleCenter.x;
-		float distY = firstCircleCenter.y - secondCircleCenter.y;
-		float distance = std::sqrt((distX*distX) + (distY*distY));
-		if (distance <= firstCircle->radius + secondCircle->radius)
-		{
-			return true;
-		}
-		return false;
-	}
-	static bool rectangleToRectangleCollision(GameObject* firstRectangle, GameObject* secondRectangle)
-	{
-		if (firstRectangle->screenPosition.x + firstRectangle->width >= secondRectangle->screenPosition.x
-			&& firstRectangle->screenPosition.x <= secondRectangle->screenPosition.x + secondRectangle->width
-			&& firstRectangle->screenPosition.y + firstRectangle->height >= secondRectangle->screenPosition.y
-			&& firstRectangle->screenPosition.y <= secondRectangle->screenPosition.y + secondRectangle->height)
-		{
-			return true;
-		}
-		return false;
-	}
-	static bool circleToRectangleCollision(GameObject* circle, GameObject* rectangle)
-	{
-		util::Position circleCenter = { 
-			circle->screenPosition.x + circle->radius, 
-			circle->screenPosition.y + circle->radius 
-		};
-
-		float testX = circleCenter.x;
-		float testY = circleCenter.y;
-
-		// Left edge
-		if (circleCenter.x < rectangle->screenPosition.x)
-		{
-			testX = rectangle->screenPosition.x;
-		}
-		// Right edge
-		else if (circleCenter.x > rectangle->screenPosition.x + rectangle->width)
-		{
-			testX = rectangle->screenPosition.x + rectangle->width;
-		}
-
-		// Top edge
-		if (circleCenter.y < rectangle->screenPosition.y)
-		{
-			testY = rectangle->screenPosition.y;
-			rectangle->isHitFromTop = true;
-		}
-		// Bottom edge
-		else if (circleCenter.y > rectangle->screenPosition.y + rectangle->height)
-		{
-			testY = rectangle->screenPosition.y + rectangle->height;
-			rectangle->isHitFromBottom = true;
-		}
-
-		float distX = circleCenter.x - testX;
-		float distY = circleCenter.y - testY;
-		float distance = std::sqrt((distX * distX) + (distY * distY));
-		if (distance <= circle->radius)
-		{
-			if (circleCenter.x <= rectangle->screenPosition.x + 15.f) 
-			{
-				rectangle->isHitFromLeftEdge = true;
-			}
-			else if (circleCenter.x >= rectangle->screenPosition.x + rectangle->width - 15.f)
-			{
-				rectangle->isHitFromRightEdge = true;
-			}
-			return true;
-		}
-		rectangle->isHitFromLeftEdge = false;
-		rectangle->isHitFromRightEdge = false;
-		rectangle->isHitFromTop = false;
-		rectangle->isHitFromBottom = false;
-		return false;
-	}
+	bool isInCollisionWith(GameObject* otherObject);
 	/// <summary>
-	/// Type of the game object. This is used for collision checking.
+	/// Determines whether the two objects are colliding, considering that they're both circles.
 	/// </summary>
+	/// <param name="firstCircle">First circle object</param>
+	/// <param name="secondCircle">Second circle object</param>
+	/// <returns></returns>
+	static bool circleToCircleCollision(GameObject* firstCircle, GameObject* secondCircle);
+	/// <summary>
+	/// Determines whether the two objects are colliding, considering that they're both rectangles.
+	/// </summary>
+	/// <param name="firstRectangle">First rectangle object</param>
+	/// <param name="secondRectangle">Second rectangle object</param>
+	/// <returns></returns>
+	static bool rectangleToRectangleCollision(GameObject* firstRectangle, GameObject* secondRectangle);
+	/// <summary>
+	/// Determines whether the two objects are colliding, considering that one is a circle and the other one is a rectangle.
+	/// </summary>
+	/// <param name="circle">Circle object</param>
+	/// <param name="rectangle">Rectangle object</param>
+	/// <returns></returns>
+	static bool circleToRectangleCollision(GameObject* circle, GameObject* rectangle);
+	/// <summary>
+	/// Determines from which vertical side/position has an object been hit.
+	/// </summary>
+	/// <returns></returns>
+	HitPosition getVerticalHitPosition();
+	/// <summary>
+	/// Determines from which horizontal side/position has an object been hit.
+	/// </summary>
+	/// <returns></returns>
+	HitPosition getHorizontalHitPosition();
+protected:
 	GameObjectType type;
-	/// <summary>
-	/// Objects position on the screen.
-	/// </summary>
 	util::Position screenPosition;
-	/// <summary>
-	/// Renderer for rendering the object on the screen.
-	/// </summary>
 	SDL_Renderer* renderer;
 
-	bool isHitFromLeftEdge = false;
-	bool isHitFromRightEdge = false;
-	bool isHitFromTop = false;
-	bool isHitFromBottom = false;
+	HitPosition verticalHitPosition;
+	HitPosition horizontalHitPosition;
 	float width;
 	float height;
 	float radius = 0.f;

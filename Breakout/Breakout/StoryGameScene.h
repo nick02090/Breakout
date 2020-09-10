@@ -7,78 +7,56 @@ public:
 
 	enum class StoryState
 	{
-		NARRATION,
-		LEVEL
+		Narration,
+		Level
 	};
 
 	enum class StoryChapterState
 	{
-		FIRST_CHAPTER,
-		SECOND_CHAPTER,
-		THIRD_CHAPTER
+		FirstChapter,
+		SecondChapter,
+		ThirdChapter
 	};
 
-	StoryGameScene(SDL_Renderer* _renderer) : GameScene(_renderer)
-	{
-		// Initialize member variables
-		storyState = StoryState::NARRATION;
-
-		// Initialize the player
-		player = new Player(_renderer);
-
-		// Initialize textures
-		backgroundTransitionTexture = NULL;
-		blackButtonTexture = NULL;
-		whiteButtonTexture = NULL;
-
-		// Initialize chapters
-		firstChapter = new StoryChapter(FIRST_CHAPTER_PATH);
-		secondChapter = new StoryChapter(SECOND_CHAPTER_PATH);
-		thirdChapter = new StoryChapter(THIRD_CHAPTER_PATH);
-		chapters[0] = firstChapter;
-		chapters[1] = secondChapter;
-		chapters[2] = thirdChapter;
-		StoryChapter* currentChapter = chapters[currentChapterIndex];
-		currentChapterLine = currentChapter->getNextLine();
-		currentLevel = NULL;
-
-		// Initialize menu for narration mode
-		narrationMenu = new Menu(narrationMenuButtons, renderer);
-		narrationMenu->show();
-
-		// Initialize font
-		font = NULL;
-	}
-	~StoryGameScene()
-	{
-		// Free loaded images
-		SDL_DestroyTexture(backgroundTransitionTexture);
-		backgroundTransitionTexture = NULL;
-		SDL_DestroyTexture(blackButtonTexture);
-		blackButtonTexture = NULL;
-		SDL_DestroyTexture(whiteButtonTexture);
-		whiteButtonTexture = NULL;
-
-		// Delete the player
-		delete player;
-
-		// Free loaded font
-		TTF_CloseFont(font);
-		font = NULL;
-	}
+	StoryGameScene(SDL_Renderer* _renderer);
+	~StoryGameScene();
+	/// <summary>
+	/// Updates the screen window.
+	/// </summary>
 	void update();
+	/// <summary>
+	/// Handles input.
+	/// </summary>
 	void handleInput(SDL_Event* e);
+	/// <summary>
+	/// Loads required media.
+	/// </summary>
 	bool loadMedia();
 private:
+	/// <summary>
+	/// Handles input when in narration state.
+	/// </summary>
 	void narrationHandleInput(SDL_Event* e);
+	/// <summary>
+	/// Handles input when in level state.
+	/// </summary>
 	void levelHandleInput(SDL_Event* e);
+	/// <summary>
+	/// Updates the screen window when in narration state.
+	/// </summary>
 	void narrationUpdate();
+	/// <summary>
+	/// Updates the screen window when in level state.
+	/// </summary>
 	void levelUpdate();
+	/// <summary>
+	/// Selected OK on the narration menu.
+	/// </summary>
 	void ok();
 
-	const std::string FIRST_CHAPTER_PATH = "Chapters/Chapter_I.xml";
-	const std::string SECOND_CHAPTER_PATH = "Chapters/Chapter_II.xml";
-	const std::string THIRD_CHAPTER_PATH = "Chapters/Chapter_III.xml";
+	const std::string FirstChapterPath = "Chapters/Chapter_I.xml";
+	const std::string SecondChapterPath = "Chapters/Chapter_II.xml";
+	const std::string ThirdChapterPath = "Chapters/Chapter_III.xml";
 
 	StoryState storyState;
 
@@ -101,10 +79,10 @@ private:
 	typedef void (StoryGameScene::* narrationMenuRequest)(void);
 	narrationMenuRequest narrationMenuRequests[1] = { &StoryGameScene::ok };
 
-	const util::Position OK_BUTTON_POSITION = { 750.f, 700.f };
-	const util::Position OK_TEXT_POSITION = { 850.f, 720.f };
+	const util::Position OKButtonPosition = { 750.f, 700.f };
+	const util::Position OKTextPosition = { 850.f, 720.f };
 	std::vector<MenuButton> narrationMenuButtons{
-		{ OK_BUTTON_POSITION, OK_TEXT_POSITION, "OK" }
+		{ OKButtonPosition, OKTextPosition, "OK" }
 	};
 
 	TTF_Font* font;

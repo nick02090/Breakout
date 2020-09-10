@@ -1,5 +1,25 @@
 #include "MainMenuGameScene.h"
 
+MainMenuGameScene::MainMenuGameScene(SDL_Renderer* _renderer) : GameScene(_renderer)
+{
+	// Initialize member variables
+	firstMenu = new Menu(firstMenuButtons, renderer);
+	secondMenu = new Menu(secondMenuButtons, renderer);
+	currentMenu = firstMenu;
+	currentMenuRequests = firstMenuRequests;
+	currentMenu->show();
+
+	// Initialize textures
+	backgroundTexture = NULL;
+}
+
+MainMenuGameScene::~MainMenuGameScene()
+{
+	// Free loaded images
+	SDL_DestroyTexture(backgroundTexture);
+	backgroundTexture = NULL;
+}
+
 void MainMenuGameScene::update()
 {
 	// Render background texture to screen
@@ -60,6 +80,7 @@ bool MainMenuGameScene::loadMedia()
 
 void MainMenuGameScene::play()
 {
+	// Show the next menu that chooses what to play
 	currentMenu = secondMenu;
 	currentMenuRequests = secondMenuRequests;
 	firstMenu->show();
@@ -68,20 +89,24 @@ void MainMenuGameScene::play()
 
 void MainMenuGameScene::quit()
 {
+	// Quit the application
 	shouldQuit = true;
 }
 
 void MainMenuGameScene::story()
 {
-	nextGameState = GameState::STORY;
+	// Play story mode
+	nextGameState = GameState::Story;
 }
 
 void MainMenuGameScene::arcade()
 {
-	nextGameState = GameState::ARCADE;
+	// Play arcade mode
+	nextGameState = GameState::Arcade;
 }
 
 void MainMenuGameScene::coop()
 {
-	nextGameState = GameState::COOP;
+	// Play coop mode
+	nextGameState = GameState::Coop;
 }

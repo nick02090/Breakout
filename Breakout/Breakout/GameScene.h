@@ -6,26 +6,19 @@
 
 enum class GameState
 {
-	MAIN_MENU,
-	STORY,
-	ARCADE,
-	COOP,
-	DEFAULT
+	MainMenu,
+	Story,
+	Arcade,
+	Coop,
+	Default
 };
 
 
 class GameScene
 {
 public:
-	GameScene(SDL_Renderer* _renderer) : renderer(_renderer) 
-	{
-		// Initialize screenWidth and screenHeight
-		SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
-
-		// Initialize nextGameState
-		nextGameState = GameState::DEFAULT;
-	}
-	virtual ~GameScene() {}
+	GameScene(SDL_Renderer* _renderer);
+	virtual ~GameScene();
 	/// <summary>
 	/// Updates the screen window.
 	/// </summary>
@@ -42,34 +35,17 @@ public:
 	/// Returns current should quit state.
 	/// </summary>
 	/// <returns></returns>
-	bool hasRequestedToQuit()
-	{
-		return shouldQuit;
-	}
+	bool hasRequestedToQuit();
 	/// <summary>
 	/// Returns true if the scene has request to change to another one.
 	/// </summary>
 	/// <returns></returns>
-	bool hasRequestNextGameState()
-	{
-		// If nextGameState has been set then the scene requested a change
-		if (nextGameState != GameState::DEFAULT)
-		{
-			return true;
-		}
-		else 
-		{
-			return false;
-		}
-	}
+	bool hasRequestNextGameState();
 	/// <summary>
 	/// Returns next game state.
 	/// </summary>
 	/// <returns></returns>
-	GameState getNextGameState()
-	{
-		return nextGameState;
-	}
+	GameState getNextGameState();
 protected:
 	SDL_Renderer* renderer;
 	int screenWidth, screenHeight;

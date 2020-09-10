@@ -3,126 +3,73 @@
 class Player : public GameObject
 {
 public:
-	Player(SDL_Renderer* _renderer) : GameObject(_renderer)
-	{
-		// Set object type
-		type = GameObjectType::Rectangle;
-		// Load all necessary assets
-		texture = util::loadTexture(renderer, TEXTURE_PATH);
-		// Set member variables
-		currentLives = MAX_LIVES;
-		currentScore = 0;
-
-		width = WIDTH;
-		height = HEIGHT;
-	}
-	~Player()
-	{
-		// Free loaded images
-		SDL_DestroyTexture(texture);
-		texture = NULL;
-	}
-	inline void render(util::Position _screenPosition, float widthFactor = 1.0, float heightFactor = 1.0)
-	{
-		// Update position on the screen
-		screenPosition = _screenPosition;
-
-		// Create a rect to position the texture
-		SDL_FRect rect;
-		rect.x = screenPosition.x;
-		rect.y = screenPosition.y;
-		rect.w = width / widthFactor;
-		rect.h = height / heightFactor;
-
-		// Render the texture on the screen
-		SDL_RenderCopyF(renderer, texture, NULL, &rect);
-
-		// Update velocity
-		velocity = util::clamp(velocity - 1.f, MIN_VELOCITY, MAX_VELOCITY);
-	}
+	Player(SDL_Renderer* _renderer);
+	~Player();
+	/// <summary>
+	/// Renders the player on the screen.
+	/// </summary>
+	/// <param name="_screenPosition">Screen position that the player is rendered on</param>
+	/// <param name="widthFactor">Width factor that is applied to the width size of the rendered player texture</param>
+	/// <param name="heightFactor">Height factor that is applied to the height size of the rendered player texture</param>
+	void render(util::Position _screenPosition, float widthFactor = 1.0, float heightFactor = 1.0);
 	/// <summary>
 	/// Add points to the player score.
 	/// </summary>
 	/// <param name="value">Value which is added to the score</param>
-	inline void addToScore(int value)
-	{
-		currentScore += value;
-	}
+	void addToScore(int value);
 	/// <summary>
 	/// Returns current score collected by the player.
 	/// </summary>
 	/// <returns></returns>
-	inline int getCurrentScore()
-	{
-		return currentScore;
-	}
+	int getCurrentScore();
 	/// <summary>
 	/// Returns current reamaining lives of the player.
 	/// </summary>
 	/// <returns></returns>
-	inline int getCurrentLives()
-	{
-		return currentLives;
-	}
+	int getCurrentLives();
 	/// <summary>
 	/// Reduces current reamaining lives by one.
 	/// </summary>
-	inline void reduceLives()
-	{
-		currentLives -= 1;
-	}
+	void reduceLives();
 	/// <summary>
 	/// Determines whether the player is dead or not.
 	/// </summary>
 	/// <returns></returns>
-	inline bool isDead()
-	{
-		return currentLives == 0;
-	}
-	inline void reset()
-	{
-		currentLives = MAX_LIVES;
-		currentScore = 0;
-		acceleration = 0.f;
-		velocity = MIN_VELOCITY;
-	}
-	inline void turnOffAcceleration()
-	{
-		acceleration = 0.f;
-	}
-	inline void increaseAcceleration(bool isNegativeXAxis)
-	{
-		if (isNegativeXAxis)
-		{
-			velocityMultiplier = -1.f;
-		} 
-		else 
-		{
-			velocityMultiplier = 1.f;
-		}
-		acceleration += 1.f;
-	}
-	inline float getVelocity()
-	{
-		velocity = util::clamp(velocity + acceleration, MIN_VELOCITY, MAX_VELOCITY);
-		return velocity * velocityMultiplier;
-	}
+	bool isDead();
+	/// <summary>
+	/// Resets players' parameters to initial values.
+	/// </summary>
+	void reset();
+	/// <summary>
+	/// Sets the player acceleration to zero (0).
+	/// </summary>
+	void turnOffAcceleration();
+	/// <summary>
+	/// Increases the acceleration of the player in desired axis.
+	/// </summary>
+	/// <param name="isNegativeXAxis">True for left, false for right side</param>
+	void increaseAcceleration(bool isNegativeXAxis);
+	/// <summary>
+	/// Returns current velocity of the player.
+	/// </summary>
+	/// <returns></returns>
+	float getVelocity();
 private:
-	const std::string TEXTURE_PATH = "GameObjects/Player.png";
-	const int MAX_LIVES = 3;
+	const std::string TexturePath = "GameObjects/Player.png";
+	const int MaxLives = 3;
 
-	const float WIDTH = 100.f;
-	const float HEIGHT = 20.f;
+	const float Width = 100.f;
+	const float Height = 20.f;
 
 	SDL_Texture* texture;
 
 	int currentLives;
 	int currentScore;
 
-	const float MIN_VELOCITY = 5.f;
-	const float MAX_VELOCITY = 20.f;
+	const float MinVelocity = 5.f;
+	const float MaxVelocity = 20.f;
 	float acceleration = 0.f;
-	float velocity = MIN_VELOCITY;
+	float velocity = MinVelocity;
 	float velocityMultiplier = -1.f;
 };
 

@@ -17,64 +17,63 @@ class Level
 public:
 
 	enum class LevelState {
-		PLAYING,
-		PAUSED,
-		END,
-		QUIT,
-		MAINMENU
+		Playing,
+		Paused,
+		End,
+		Quit,
+		MainMenu
 	};
 
 	Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::string _name, bool _isRetryble);
-	~Level()
-	{
-		// Free loaded images
-		SDL_DestroyTexture(backgroundTexture);
-		backgroundTexture = NULL;
-		SDL_DestroyTexture(HUDTexture);
-		HUDTexture = NULL;
-
-		// Free loaded font
-		TTF_CloseFont(font);
-		font = NULL;
-	}
+	~Level();
+	/// <summary>
+	/// Loads required media.
+	/// </summary>
 	bool loadMedia();
+	/// <summary>
+	/// Updates the screen window.
+	/// </summary>
 	void update();
+	/// <summary>
+	/// Handles input.
+	/// </summary>
+	/// <param name="e"></param>
 	void handleInput(SDL_Event* e);
 	/// <summary>
 	/// Determines whether the level has ended.
 	/// </summary>
 	/// <returns></returns>
-	bool hasEnded()
-	{
-		return levelState == LevelState::END;
-	}
+	bool hasEnded();
 	/// <summary>
-	/// Determines whether user requested to quit the whole game.
+	/// Determines whether user has requested to quit the whole game.
 	/// </summary>
 	/// <returns></returns>
-	bool hasRequestedQuit()
-	{
-		return levelState == LevelState::QUIT;
-	}
+	bool hasRequestedQuit();
 	/// <summary>
-	/// Determines whether user request to go back to main menu
+	/// Determines whether user has requested to go back to main menu.
 	/// </summary>
 	/// <returns></returns>
-	bool hasRequestedMainMenu()
-	{
-		return levelState == LevelState::MAINMENU;
-	}
+	bool hasRequestedMainMenu();
 private:
+	/// <summary>
+	/// Selected RESUME on the pause menu.
+	/// </summary>
 	void resume();
+	/// <summary>
+	/// Selected RETRY on the pause menu.
+	/// </summary>
 	void retry();
+	/// <summary>
+	/// Selected QUIT on the pause menu.
+	/// </summary>
 	void quit();
 
 	const std::string HUDTexturePath = "Textures/LevelHUD.png";
 	
-	const float MAX_BRICKS_WIDTH = 994.f;
-	const float MAX_BRICKS_HEIGHT = 600.f;
-	const float BRICK_HEIGHT = 20.f;
-	const float BRICK_WIDHT = 50.f;
+	const float MaxBricksWidth = 994.f;
+	const float MaxBricksHeight = 600.f;
+	const float BrickHeight = 20.f;
+	const float BrickWidth = 50.f;
 	float bricksWidthFactor;
 	float bricksHeightFactor;
 
@@ -99,28 +98,28 @@ private:
 
 	std::string name;
 
-	LevelState levelState = LevelState::PLAYING;
+	LevelState levelState = LevelState::Playing;
 
 	SDL_Texture* backgroundTexture = NULL;
 	SDL_Texture* HUDTexture = NULL;
 
-	const util::Position RESUME_BUTTON_POSITION = { 365.f, 250.f };
-	const util::Position RETRY_BUTTON_POSITION = { 365.f, 350.f };
-	const util::Position QUIT_BUTTON_POSITION = { 365.f, 450.f };
+	const util::Position ResumeButtonPosition = { 365.f, 250.f };
+	const util::Position RetryButtonPosition = { 365.f, 350.f };
+	const util::Position QuitButtonPosition = { 365.f, 450.f };
 
-	const util::Position RESUME_TEXT_POSITION = { 420.f, 270.f };
-	const util::Position RETRY_TEXT_POSITION = { 440.f, 370.f };
-	const util::Position QUIT_TEXT_POSITION = { 450.f, 470.f };
+	const util::Position ResumeTextPosition = { 420.f, 270.f };
+	const util::Position RetryTextPosition = { 440.f, 370.f };
+	const util::Position QuitTextPosition = { 450.f, 470.f };
 
 	Menu* pauseMenu;
 	std::vector<MenuButton> retryablePauseMenuButtons {
-		{ RESUME_BUTTON_POSITION, RESUME_TEXT_POSITION, "RESUME" },
-		{ RETRY_BUTTON_POSITION, RETRY_TEXT_POSITION, "RETRY" },
-		{ QUIT_BUTTON_POSITION, QUIT_TEXT_POSITION, "QUIT" }
+		{ ResumeButtonPosition, ResumeTextPosition, "RESUME" },
+		{ RetryButtonPosition, RetryTextPosition, "RETRY" },
+		{ QuitButtonPosition, QuitTextPosition, "QUIT" }
 	};
 	std::vector<MenuButton> nonRetryablePauseMenuButtons{
-		{ RESUME_BUTTON_POSITION, RESUME_TEXT_POSITION, "RESUME" },
-		{ RETRY_BUTTON_POSITION, RETRY_TEXT_POSITION, "QUIT" }
+		{ ResumeButtonPosition, ResumeTextPosition, "RESUME" },
+		{ RetryButtonPosition, RetryTextPosition, "QUIT" }
 	};
 
 	typedef void (Level::* pauseMenuRequest)(void);

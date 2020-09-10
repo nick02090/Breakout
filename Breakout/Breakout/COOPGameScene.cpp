@@ -1,5 +1,13 @@
 #include "COOPGameScene.h"
 
+COOPGameScene::COOPGameScene(SDL_Renderer* _renderer) : GameScene(_renderer)
+{
+}
+
+COOPGameScene::~COOPGameScene()
+{
+}
+
 void COOPGameScene::update()
 {
 }
