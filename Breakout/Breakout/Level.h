@@ -111,7 +111,7 @@ private:
 	const util::Position RetryTextPosition = { 440.f, 370.f };
 	const util::Position QuitTextPosition = { 450.f, 470.f };
 
-	Menu* pauseMenu;
+	Menu<Level>* pauseMenu;
 	std::vector<MenuButton> retryablePauseMenuButtons {
 		{ ResumeButtonPosition, ResumeTextPosition, "RESUME" },
 		{ RetryButtonPosition, RetryTextPosition, "RETRY" },
@@ -122,9 +122,8 @@ private:
 		{ RetryButtonPosition, RetryTextPosition, "QUIT" }
 	};
 
-	typedef void (Level::* pauseMenuRequest)(void);
-	pauseMenuRequest retryablePauseMenuRequests[3] = { &Level::resume, &Level::retry, &Level::quit };
-	pauseMenuRequest nonRetryablePauseMenuRequests[2] = { &Level::resume, &Level::quit };
+	Menu<Level>::MenuRequest retryablePauseMenuRequests[3] = { &Level::resume, &Level::retry, &Level::quit };
+	Menu<Level>::MenuRequest nonRetryablePauseMenuRequests[2] = { &Level::resume, &Level::quit };
 
 	bool isRetryable;
 

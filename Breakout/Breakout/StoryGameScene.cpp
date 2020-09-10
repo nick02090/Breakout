@@ -25,7 +25,7 @@ StoryGameScene::StoryGameScene(SDL_Renderer* _renderer) : GameScene(_renderer)
 	currentLevel = NULL;
 
 	// Initialize menu for narration mode
-	narrationMenu = new Menu(narrationMenuButtons, renderer);
+	narrationMenu = new Menu<StoryGameScene>(narrationMenuButtons, renderer, narrationMenuRequests, this);
 	narrationMenu->show();
 
 	// Initialize font
@@ -115,13 +115,7 @@ void StoryGameScene::narrationHandleInput(SDL_Event* e)
 {
 	narrationMenu->handleInput(e);
 
-	shouldQuit = narrationMenu->hasRequestedQuit();
-
-	int requestedElementIndex = narrationMenu->confirmSelection();
-	if (requestedElementIndex >= 0)
-	{
-		std::invoke(narrationMenuRequests[requestedElementIndex], this);
-	}
+	shouldQuit = narrationMenu->hasRequestedQuit() | shouldQuit;
 }
 
 void StoryGameScene::levelHandleInput(SDL_Event* e)

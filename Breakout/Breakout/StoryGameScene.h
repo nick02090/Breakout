@@ -75,9 +75,8 @@ private:
 	Level* currentLevel;
 	Player* player;
 
-	Menu* narrationMenu;
-	typedef void (StoryGameScene::* narrationMenuRequest)(void);
-	narrationMenuRequest narrationMenuRequests[1] = { &StoryGameScene::ok };
+	Menu<StoryGameScene>* narrationMenu;
+	Menu<StoryGameScene>::MenuRequest narrationMenuRequests[1] = { &StoryGameScene::ok };
 
 	const util::Position OKButtonPosition = { 750.f, 700.f };
 	const util::Position OKTextPosition = { 850.f, 720.f };

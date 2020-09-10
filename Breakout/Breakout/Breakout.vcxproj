@@ -152,7 +152,6 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="MainMenuGameScene.cpp" />
-    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="StoryChapter.cpp" />
     <ClCompile Include="StoryGameScene.cpp" />

@@ -9,11 +9,11 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 	// Initialize pause menu
 	if (isRetryable)
 	{
-		pauseMenu = new Menu(retryablePauseMenuButtons, renderer);
+		pauseMenu = new Menu<Level>(retryablePauseMenuButtons, renderer, retryablePauseMenuRequests, this);
 	} 
 	else
 	{
-		pauseMenu = new Menu(nonRetryablePauseMenuButtons, renderer);
+		pauseMenu = new Menu<Level>(nonRetryablePauseMenuButtons, renderer, nonRetryablePauseMenuRequests, this);
 	}
 
 	// Initialize member variables via xmlDocument
@@ -348,19 +348,6 @@ void Level::handleInput(SDL_Event* e)
 		if (pauseMenu->hasRequestedQuit())
 		{
 			levelState = LevelState::Quit;
-		}
-
-		int requestedElementIndex = pauseMenu->confirmSelection();
-		if (requestedElementIndex >= 0)
-		{
-			if (isRetryable)
-			{
-				std::invoke(retryablePauseMenuRequests[requestedElementIndex], this);
-			}
-			else
-			{
-				std::invoke(nonRetryablePauseMenuRequests[requestedElementIndex], this);
-			}
 		}
 
 		return;

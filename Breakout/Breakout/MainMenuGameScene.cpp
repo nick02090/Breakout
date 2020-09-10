@@ -3,8 +3,8 @@
 MainMenuGameScene::MainMenuGameScene(SDL_Renderer* _renderer) : GameScene(_renderer)
 {
 	// Initialize member variables
-	firstMenu = new Menu(firstMenuButtons, renderer);
-	secondMenu = new Menu(secondMenuButtons, renderer);
+	firstMenu = new Menu<MainMenuGameScene>(firstMenuButtons, renderer, firstMenuRequests, this);
+	secondMenu = new Menu<MainMenuGameScene>(secondMenuButtons, renderer, secondMenuRequests, this);
 	currentMenu = firstMenu;
 	currentMenuRequests = firstMenuRequests;
 	currentMenu->show();
@@ -35,8 +35,8 @@ void MainMenuGameScene::handleInput(SDL_Event* e)
 	// Let current menu handle the input
 	currentMenu->handleInput(e);
 
-	// Quit if current menu has requested to quit
-	shouldQuit = currentMenu->hasRequestedQuit();
+	// Quit if current menu has requested to quit (or it was already called upon)
+	shouldQuit = currentMenu->hasRequestedQuit() | shouldQuit;
 
 	// Reverse is called upon a BACKSPACE 
 	// Occurs when a second menu wants to pass back controls to the first menu
@@ -47,14 +47,6 @@ void MainMenuGameScene::handleInput(SDL_Event* e)
 		firstMenu->show();
 		currentMenu = firstMenu;
 		currentMenuRequests = firstMenuRequests;
-	}
-
-	// User has made a selection on the current menu
-	// Invoke requested method
-	int requestedElementIndex = currentMenu->confirmSelection();
-	if (requestedElementIndex >= 0)
-	{
-		std::invoke(currentMenuRequests[requestedElementIndex], this);
 	}
 }
 

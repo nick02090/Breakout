@@ -51,9 +51,9 @@ private:
 	const util::Position ArcadeTextPosition = { 600.f, 390.f };
 	const util::Position CoopTextPosition = { 620.f, 510.f };
 
-	Menu* currentMenu;
-	Menu* firstMenu;
-	Menu* secondMenu;
+	Menu<MainMenuGameScene>* currentMenu;
+	Menu<MainMenuGameScene>* firstMenu;
+	Menu<MainMenuGameScene>* secondMenu;
 	std::vector<MenuButton> firstMenuButtons{ 
 		{ PlayButtonPosition, PlayTextPosition, "PLAY" }, 
 		{ QuitButtonPosition, QuitTextPosition, "QUIT" } 
@@ -64,10 +64,10 @@ private:
 		{ CoopButtonPosition, CoopTextPosition, "COOP" } 
 	};
 	
-	typedef void (MainMenuGameScene::*menuRequest)(void);
-	menuRequest firstMenuRequests[2] = { &MainMenuGameScene::play, &MainMenuGameScene::quit };
-	menuRequest secondMenuRequests[3] = { &MainMenuGameScene::story, &MainMenuGameScene::arcade, &MainMenuGameScene::coop};
-	menuRequest* currentMenuRequests;
+	//typedef void (MainMenuGameScene::*menuRequest)(void);
+	Menu<MainMenuGameScene>::MenuRequest firstMenuRequests[2] = { &MainMenuGameScene::play, &MainMenuGameScene::quit };
+	Menu<MainMenuGameScene>::MenuRequest secondMenuRequests[3] = { &MainMenuGameScene::story, &MainMenuGameScene::arcade, &MainMenuGameScene::coop};
+	Menu<MainMenuGameScene>::MenuRequest* currentMenuRequests;
 
 	SDL_Texture* backgroundTexture;
 };
