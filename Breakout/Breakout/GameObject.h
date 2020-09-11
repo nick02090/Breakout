@@ -19,7 +19,7 @@ public:
 		Default
 	};
 
-	GameObject(SDL_Renderer* _renderer);
+	GameObject(SDL_Renderer* _renderer, GameObjectType _type);
 	/// <summary>
 	/// Renders an object on the screen by creating a copy of the object.
 	/// </summary>
@@ -73,6 +73,6 @@ protected:
 	HitPosition horizontalHitPosition;
 	float width;
 	float height;
-	float radius = 0.f;
+	float radius;
 };
 

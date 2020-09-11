@@ -6,15 +6,23 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 	// Initialize ball for the level
 	ball = new Ball(renderer);
 
-	// Initialize pause menu
+	// Initialize all of the menus
 	if (isRetryable)
 	{
+		// Initialize pause menu
 		pauseMenu = new Menu<Level>(retryablePauseMenuButtons, renderer, retryablePauseMenuRequests, this);
+		// Initialize lose end level menu
+		loseEndLevelMenu = new Menu<Level>(retryableLoseEndLevelMenuButtons, renderer, retryableLoseEndLevelMenuRequests, this);
 	} 
 	else
 	{
+		// Initialize pause menu
 		pauseMenu = new Menu<Level>(nonRetryablePauseMenuButtons, renderer, nonRetryablePauseMenuRequests, this);
+		// Initialize lose end level menu
+		loseEndLevelMenu = new Menu<Level>(nonRetryableLoseEndLevelMenuButtons, renderer, nonRetryableLoseEndLevelMenuRequests, this);
 	}
+	// Initialize win end level menu
+	winEndLevelMenu = new Menu<Level>(winEndLevelMenuButtons, renderer, winEndLevelMenuRequests, this);
 
 	// Initialize member variables via xmlDocument
 	tinyxml2::XMLDocument doc;
@@ -100,8 +108,8 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 						if (brick->getId()._Equal(id))
 						{
 							int col = static_cast<int>(bricksRow.size());
-							float x = firstBrickPosition.x + col * (50.f + columnSpacing) / bricksWidthFactor;
-							float y = firstBrickPosition.y + row * (20.f + rowSpacing) / bricksHeightFactor;
+							float x = firstBrickPosition.x + col * (BrickWidth + columnSpacing) / bricksWidthFactor;
+							float y = firstBrickPosition.y + row * (BrickHeight + rowSpacing) / bricksHeightFactor;
 							if (brick->getIsEmpty())
 							{
 								bricksRow.push_back(new Brick(_renderer, "EmptyBrick", "_"));
@@ -168,8 +176,10 @@ bool Level::loadMedia()
 		success = false;
 	}
 
-	// Load media for the pause menu
+	// Load media for the menus
 	pauseMenu->loadMedia();
+	loseEndLevelMenu->loadMedia();
+	winEndLevelMenu->loadMedia();
 
 	return success;
 }
@@ -185,23 +195,23 @@ void Level::update()
 	// Draw level name on the HUD
 	SDL_Color white = { 250, 250, 250 };
 	util::Position namePosition = { 484.f - static_cast<int>(name.size()) * 12.f, 688.f };
-	util::drawText(renderer, font, white, name.c_str(), namePosition, util::PARAGRAPH_FONT_SIZE);
+	util::drawText(renderer, font, white, name.c_str(), namePosition, util::ParagraphFontSize);
 
 	// Draw player score on the HUD
 	SDL_Color cyan = { 0, 255, 225 };
 	util::Position scorePosition = { 96.f, 735.f };
-	util::drawText(renderer, font, cyan, std::to_string(player->getCurrentScore()).c_str(), scorePosition, util::PARAGRAPH_FONT_SIZE);
+	util::drawText(renderer, font, cyan, std::to_string(player->getCurrentScore()).c_str(), scorePosition, util::ParagraphFontSize);
 
 	// Draw player lives on the HUD
 	SDL_Color red = { 255, 0, 84 };
 	util::Position livesPosition = { 990.f, 735.f };
-	util::drawText(renderer, font, red, std::to_string(player->getCurrentLives()).c_str(), livesPosition, util::PARAGRAPH_FONT_SIZE);
+	util::drawText(renderer, font, red, std::to_string(player->getCurrentLives()).c_str(), livesPosition, util::ParagraphFontSize);
 
 	// Draw the player
 	player->render(currentPlayerPosition);
 
-	// Level is paused -> just draw the ball and bricks without updating it's location and without collision checks
-	if (levelState == LevelState::Paused)
+	// Level is paused or just ended -> just draw the ball and bricks without updating it's location and without collision checks
+	if (levelState == LevelState::Paused || levelState == LevelState::WinEndMenu || levelState == LevelState::LoseEndMenu)
 	{
 		// Draw the ball
 		ball->render(currentBallPosition);
@@ -225,17 +235,39 @@ void Level::update()
 			}
 		}
 
-		// Draw pause overlay background
+		// Draw menu overlay background
 		SDL_Rect fillRect = { 0, 0, 1024, 768 };
 		SDL_SetRenderDrawBlendMode(renderer, SDL_BlendMode::SDL_BLENDMODE_BLEND);
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x33);
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x33); // Black with lowered alpha channel to get dimmed effect
 		SDL_RenderFillRect(renderer, &fillRect);
 
-		// Draw pause text
-		util::drawText(renderer, font, white, "PAUSED", {425.f, 150.f}, util::HEADING_FONT_SIZE);
+		// Level is paused
+		if (levelState == LevelState::Paused)
+		{
+			// Draw pause text
+			util::drawText(renderer, font, white, "PAUSED", { 425.f, 150.f }, util::HeadingFontSize);
 
-		// Draw pause menu
-		pauseMenu->update();
+			// Draw pause menu
+			pauseMenu->update();
+		}
+		// Level has ended in victory
+		else if (levelState == LevelState::WinEndMenu)
+		{
+			// Draw victory text
+			util::drawText(renderer, font, white, "VICTORY", { 425.f, 150.f }, util::HeadingFontSize);
+
+			// Draw win end level menu
+			winEndLevelMenu->update();
+		}
+		// Level has ended in loss
+		else if (levelState == LevelState::LoseEndMenu)
+		{
+			// Draw loss text
+			util::drawText(renderer, font, white, "DEFEAT", { 425.f, 150.f }, util::HeadingFontSize);
+
+			// Draw lose end level menu
+			loseEndLevelMenu->update();
+		}
 
 		return;
 	}
@@ -266,11 +298,16 @@ void Level::update()
 	{
 		// Ball fell down off the screen -> reposition at the start
 		currentBallPosition = { 485.f, 618.f };
-		// TODO: Randomize this direction
 		currentBallDirectionX = 1.f;
 		currentBallDirectionY = -1.f;
 		// Reduce 1 life point to the player
 		player->reduceLives();
+		// End the level if the player lost all of his lives
+		if (player->getCurrentLives() == 0)
+		{
+			levelState = LevelState::LoseEndMenu;
+			loseEndLevelMenu->show();
+		}
 	}
 	if (ball->isInCollisionWith(player))
 	{
@@ -335,17 +372,45 @@ void Level::update()
 	}
 	if (numberOfRemainingBricks == 0)
 	{
-		levelState = LevelState::End;
+		levelState = LevelState::WinEndMenu;
+		winEndLevelMenu->show();
 	}
 }
 
 void Level::handleInput(SDL_Event* e)
 {
+	// Let pause menu handle the input
 	if (levelState == LevelState::Paused)
 	{
 		pauseMenu->handleInput(e);
 
 		if (pauseMenu->hasRequestedQuit())
+		{
+			levelState = LevelState::Quit;
+		}
+
+		return;
+	}
+
+	// Let lose end level menu handle the input
+	if (levelState == LevelState::LoseEndMenu)
+	{
+		loseEndLevelMenu->handleInput(e);
+
+		if (loseEndLevelMenu->hasRequestedQuit())
+		{
+			levelState = LevelState::Quit;
+		}
+
+		return;
+	}
+
+	// Let win end level menu handle the input
+	if (levelState == LevelState::WinEndMenu)
+	{
+		winEndLevelMenu->handleInput(e);
+
+		if (winEndLevelMenu->hasRequestedQuit())
 		{
 			levelState = LevelState::Quit;
 		}
@@ -444,18 +509,24 @@ void Level::retry()
 
 	// Reset player properties
 	player->reset();
-	currentPlayerPosition = { 445.f, 660.f };
+	currentPlayerPosition = { 445.f, 660.f }; // Initial player location
 
 	// Reset ball properties
 	currentBallDirectionX = 1.f;
-	currentBallDirectionY = -1.f; // TODO: move this to Ball class
-	currentBallPosition = { 485.f, 618.f };
+	currentBallDirectionY = -1.f;
+	currentBallPosition = { 485.f, 618.f }; // Initial ball location
 
 	levelState = LevelState::Playing;
 	pauseMenu->reset();
+	loseEndLevelMenu->reset();
 }
 
 void Level::quit()
 {
 	levelState = LevelState::MainMenu;
+}
+
+void Level::end()
+{
+	levelState = LevelState::End;
 }

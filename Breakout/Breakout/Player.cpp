@@ -1,9 +1,7 @@
 #include "Player.h"
 
-Player::Player(SDL_Renderer* _renderer) : GameObject(_renderer)
+Player::Player(SDL_Renderer* _renderer) : GameObject(_renderer, GameObjectType::Rectangle)
 {
-	// Set object type
-	type = GameObjectType::Rectangle;
 	// Load all necessary assets
 	texture = util::loadTexture(renderer, TexturePath);
 	// Set member variables

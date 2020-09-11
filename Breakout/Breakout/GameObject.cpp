@@ -1,12 +1,12 @@
 #include "GameObject.h"
 
-GameObject::GameObject(SDL_Renderer* _renderer) : renderer(_renderer)
+GameObject::GameObject(SDL_Renderer* _renderer, GameObjectType _type) : renderer(_renderer), type(_type)
 {
 	// Set default values for the member variables
 	height = 0.f;
 	width = 0.f;
+	radius = 0.f;
 	screenPosition = util::Position{ 0.f, 0.f };
-	type = GameObjectType::Rectangle;
 	verticalHitPosition = HitPosition::Default;
 	horizontalHitPosition = HitPosition::Default;
 }

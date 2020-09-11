@@ -6,8 +6,8 @@
 #include <SDL_ttf.h>
 namespace util
 {
-	const int HEADING_FONT_SIZE = 40;
-	const int PARAGRAPH_FONT_SIZE = 28;
+	const int HeadingFontSize = 40;
+	const int ParagraphFontSize = 28;
 
 	struct Position
 	{

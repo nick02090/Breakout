@@ -1,11 +1,9 @@
 #include "Brick.h"
 
 Brick::Brick(SDL_Renderer* _renderer, std::string _name, std::string _id, std::string _texturePath, int _hitPoints,
-	std::string _hitSoundPath, std::string _breakSoundPath, int _breakScore) : GameObject(_renderer), name(_name), id(_id), texturePath(_texturePath),
-	hitPoints(_hitPoints), hitSoundPath(_hitSoundPath), breakSoundPath(_breakSoundPath), breakScore(_breakScore)
+	std::string _hitSoundPath, std::string _breakSoundPath, int _breakScore) : GameObject(_renderer, GameObjectType::Rectangle), 
+	name(_name), id(_id), texturePath(_texturePath), hitPoints(_hitPoints), hitSoundPath(_hitSoundPath), breakSoundPath(_breakSoundPath), breakScore(_breakScore)
 {
-	// Set type of an object
-	type = GameObjectType::Rectangle;
 	// Initialize member variables
 	timesHit = 0;
 	// Load all necessary assets
@@ -20,7 +18,7 @@ Brick::Brick(Brick* _brick) : Brick(_brick->renderer, _brick->name, _brick->id, 
 	isEmpty = _brick->isEmpty;
 }
 
-Brick::Brick(SDL_Renderer* _renderer, std::string _name, std::string _id) : GameObject(_renderer), name(_name), id(_id)
+Brick::Brick(SDL_Renderer* _renderer, std::string _name, std::string _id) : GameObject(_renderer, GameObjectType::Rectangle), name(_name), id(_id)
 {
 	type = GameObjectType::Rectangle;
 	timesHit = 0;

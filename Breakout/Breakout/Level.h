@@ -19,6 +19,8 @@ public:
 	enum class LevelState {
 		Playing,
 		Paused,
+		WinEndMenu,
+		LoseEndMenu,
 		End,
 		Quit,
 		MainMenu
@@ -67,14 +69,44 @@ private:
 	/// Selected QUIT on the pause menu.
 	/// </summary>
 	void quit();
+	/// <summary>
+	/// Ends level.
+	/// </summary>
+	void end();
 
+	/// <summary>
+	/// Determines whether the level can be replayed during or at the end of it.
+	/// </summary>
+	bool isRetryable;
+
+	/// <summary>
+	/// Path of the HUD overlay texture.
+	/// </summary>
 	const std::string HUDTexturePath = "Textures/LevelHUD.png";
 	
+	/// <summary>
+	/// Maximum width of the screen that can be used for rendering bricks layout.
+	/// </summary>
 	const float MaxBricksWidth = 994.f;
+	/// <summary>
+	/// Maximum height of the screen that can be used for rendering bricks layout.
+	/// </summary>
 	const float MaxBricksHeight = 600.f;
+	/// <summary>
+	/// Height of a one unscaled brick.
+	/// </summary>
 	const float BrickHeight = 20.f;
+	/// <summary>
+	/// Widht of a one unscaled brick.
+	/// </summary>
 	const float BrickWidth = 50.f;
+	/// <summary>
+	/// Factor that scales bricks width.
+	/// </summary>
 	float bricksWidthFactor;
+	/// <summary>
+	/// Factor that scales bricks height.
+	/// </summary>
 	float bricksHeightFactor;
 
 	int rowCount;
@@ -84,6 +116,7 @@ private:
 	std::string backgroundTexturePath;
 	std::vector<std::vector<Brick*>> bricksLayout;
 	std::vector<Brick*> bricks;
+	std::string name;
 
 	Player* player;
 	Ball* ball;
@@ -96,36 +129,55 @@ private:
 	float currentBallDirectionX = 1.f;
 	float currentBallDirectionY = -1.f;
 
-	std::string name;
-
 	LevelState levelState = LevelState::Playing;
 
 	SDL_Texture* backgroundTexture = NULL;
 	SDL_Texture* HUDTexture = NULL;
 
-	const util::Position ResumeButtonPosition = { 365.f, 250.f };
-	const util::Position RetryButtonPosition = { 365.f, 350.f };
-	const util::Position QuitButtonPosition = { 365.f, 450.f };
+	// HINT: Pause/EndLevel menu is designed to have maximum of three buttons -> thus Top, Middle, Bottom.
+	// Positions of the buttons on the pause menu.
+	const util::Position TopButtonPosition = { 365.f, 250.f };
+	const util::Position MiddleButtonPosition = { 365.f, 350.f };
+	const util::Position BottomButtonPosition = { 365.f, 450.f };
+	// Positions of the text of the buttons on the pause menu.
+	const util::Position TopTextPosition = { 420.f, 270.f };
+	const util::Position MiddleTextPosition = { 440.f, 370.f };
+	const util::Position BottomTextPosition = { 450.f, 470.f };
 
-	const util::Position ResumeTextPosition = { 420.f, 270.f };
-	const util::Position RetryTextPosition = { 440.f, 370.f };
-	const util::Position QuitTextPosition = { 450.f, 470.f };
-
+	// Pause menu and its properties.
 	Menu<Level>* pauseMenu;
 	std::vector<MenuButton> retryablePauseMenuButtons {
-		{ ResumeButtonPosition, ResumeTextPosition, "RESUME" },
-		{ RetryButtonPosition, RetryTextPosition, "RETRY" },
-		{ QuitButtonPosition, QuitTextPosition, "QUIT" }
+		{ TopButtonPosition, TopTextPosition, "RESUME" },
+		{ MiddleButtonPosition, MiddleTextPosition, "RETRY" },
+		{ BottomButtonPosition, BottomTextPosition, "QUIT" }
 	};
 	std::vector<MenuButton> nonRetryablePauseMenuButtons{
-		{ ResumeButtonPosition, ResumeTextPosition, "RESUME" },
-		{ RetryButtonPosition, RetryTextPosition, "QUIT" }
+		{ TopButtonPosition, TopTextPosition, "RESUME" },
+		{ MiddleButtonPosition, MiddleTextPosition, "QUIT" }
 	};
-
 	Menu<Level>::MenuRequest retryablePauseMenuRequests[3] = { &Level::resume, &Level::retry, &Level::quit };
 	Menu<Level>::MenuRequest nonRetryablePauseMenuRequests[2] = { &Level::resume, &Level::quit };
 
-	bool isRetryable;
+	// Lose End Level menu and its properties.
+	Menu<Level>* loseEndLevelMenu;
+	std::vector<MenuButton> retryableLoseEndLevelMenuButtons{
+		{ TopButtonPosition, TopTextPosition, "RETRY" },
+		{ MiddleButtonPosition, MiddleTextPosition, "QUIT" }
+	};
+	Menu<Level>* nonRetryableLoseEndLevelMenu;
+	std::vector<MenuButton> nonRetryableLoseEndLevelMenuButtons{
+		{ TopButtonPosition, TopTextPosition, "QUIT" }
+	};
+	Menu<Level>::MenuRequest retryableLoseEndLevelMenuRequests[2] = { &Level::retry, &Level::quit };
+	Menu<Level>::MenuRequest nonRetryableLoseEndLevelMenuRequests[1] = { &Level::quit };
+
+	// Win End Level menu and its properties.
+	Menu<Level>* winEndLevelMenu;
+	std::vector<MenuButton> winEndLevelMenuButtons{
+		{ TopButtonPosition, TopTextPosition, "RESUME" },
+		{ MiddleButtonPosition, MiddleTextPosition, "QUIT" }
+	};
+	Menu<Level>::MenuRequest winEndLevelMenuRequests[2] = { &Level::end, &Level::quit };
 
 	TTF_Font* font = NULL;
 

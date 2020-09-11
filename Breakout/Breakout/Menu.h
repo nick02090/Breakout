@@ -69,7 +69,7 @@ public:
 			// Add text to buttons
 			for (const auto& button : buttons)
 			{
-				util::drawText(renderer, font, getTextColor(button.buttonPosition), button.text, button.textPosition, util::HEADING_FONT_SIZE);
+				util::drawText(renderer, font, getTextColor(button.buttonPosition), button.text, button.textPosition, util::HeadingFontSize);
 			}
 		}
 	}
@@ -100,7 +100,7 @@ public:
 		}
 
 		// Load the font
-		font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HEADING_FONT_SIZE);
+		font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HeadingFontSize);
 		if (font == NULL)
 		{
 			std::cout << "Failed to load font! SDL_Error: " << TTF_GetError() << std::endl;

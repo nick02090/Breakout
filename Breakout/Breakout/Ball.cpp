@@ -1,9 +1,7 @@
 #include "Ball.h"
 
-Ball::Ball(SDL_Renderer* _renderer) : GameObject(_renderer)
+Ball::Ball(SDL_Renderer* _renderer) : GameObject(_renderer, GameObjectType::Circle)
 {
-	// Set object type
-	type = GameObjectType::Circle;
 	// Load all necessary assets
 	texture = util::loadTexture(renderer, TexturePath);
 	// Set initial previous wall hit
@@ -11,7 +9,7 @@ Ball::Ball(SDL_Renderer* _renderer) : GameObject(_renderer)
 	// Set ball size parameters
 	width = Width;
 	height = Height;
-	radius = 10.f;
+	radius = Radius;
 }
 
 Ball::~Ball()

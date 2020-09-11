@@ -52,6 +52,10 @@ private:
 	/// Height of the ball.
 	/// </summary>
 	const float Height = 20.f;
+	/// <summary>
+	/// Radius of the ball.
+	/// </summary>
+	const float Radius = 10.f;
 
 	float velocity = 0.08f;
 	WallHit previousWallHit;

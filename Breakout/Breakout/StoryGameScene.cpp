@@ -98,7 +98,7 @@ bool StoryGameScene::loadMedia()
 	}
 
 	// Load the font
-	font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HEADING_FONT_SIZE);
+	font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HeadingFontSize);
 	if (font == NULL)
 	{
 		std::cout << "Failed to load font! SDL_Error: " << TTF_GetError() << std::endl;
@@ -159,10 +159,10 @@ void StoryGameScene::narrationUpdate()
 
 	// Draw title
 	SDL_Color white = { 250, 250, 250 };
-	util::drawText(renderer, font, white, chapters[currentChapterIndex]->getTitle().c_str(), {screenWidth/10.f, screenHeight/10.f}, util::HEADING_FONT_SIZE);
+	util::drawText(renderer, font, white, chapters[currentChapterIndex]->getTitle().c_str(), {screenWidth/10.f, screenHeight/10.f}, util::HeadingFontSize);
 
 	// Draw text
-	util::drawText(renderer, font, white, currentChapterLine.c_str(), {screenWidth/10.f, screenHeight/2.f}, util::PARAGRAPH_FONT_SIZE);
+	util::drawText(renderer, font, white, currentChapterLine.c_str(), {screenWidth/10.f, screenHeight/2.f}, util::ParagraphFontSize);
 
 	// Draw confirm button and it's text
 	narrationMenu->update();
