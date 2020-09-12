@@ -60,6 +60,13 @@ void Player::turnOffAcceleration()
 
 void Player::increaseAcceleration(bool isNegativeXAxis)
 {
+	// Turn off acceleration if the direction is changed
+	if ((velocityMultiplier < 0 && !isNegativeXAxis) || (velocityMultiplier > 0 && isNegativeXAxis))
+	{
+		acceleration = 0.f;
+	}
+
+
 	if (isNegativeXAxis)
 	{
 		velocityMultiplier = -1.f;

@@ -318,6 +318,7 @@ void Level::update(float deltaTime)
 		// End the level if the player lost all of his lives
 		if (player->getCurrentLives() == 0)
 		{
+			player->turnOffAcceleration();
 			levelState = LevelState::LoseEndMenu;
 			loseEndLevelMenu->show();
 		}
@@ -359,7 +360,13 @@ void Level::update(float deltaTime)
 			}
 			if (brick->isInCollisionWith(ball))
 			{
-				brick->hit();
+				// Check if the flag was already set -> that means the brick and the ball are colliding for some time
+				// If the flag is NOT set, calculate this as a valid hit and set the flag
+				if (!brick->isInCollisionWithBall)
+				{
+					brick->isInCollisionWithBall = true;
+					brick->hit();
+				}
 				if (brick->getVerticalHitPosition() == GameObject::HitPosition::Bottom)
 				{
 					currentBallDirectionY = 1.f;
@@ -375,6 +382,10 @@ void Level::update(float deltaTime)
 					continue;
 				}
 			}
+			else 
+			{
+				brick->isInCollisionWithBall = false;
+			}
 			brick->screenPosition = bricksPositions.at(row).at(col);
 			brick->render(bricksWidthFactor, bricksHeightFactor);
 			if (brick->isBreakable())
@@ -385,6 +396,7 @@ void Level::update(float deltaTime)
 	}
 	if (numberOfRemainingBricks == 0)
 	{
+		player->turnOffAcceleration();
 		levelState = LevelState::WinEndMenu;
 		winEndLevelMenu->show();
 	}
@@ -446,6 +458,7 @@ void Level::handleInput(SDL_Event* e)
 			case SDLK_ESCAPE:
 				levelState = LevelState::Paused;
 				pauseMenu->show();
+				player->turnOffAcceleration();
 				break;
 			case SDLK_LEFT:
 				player->increaseAcceleration(true);

@@ -22,28 +22,30 @@ GameObject::~GameObject()
 
 bool GameObject::isInCollisionWith(GameObject* otherObject)
 {
+	bool isInCollision = false;
+
 	// Rectangle - Rectangle collision check
 	if (type == GameObjectType::Rectangle && otherObject->type == GameObjectType::Rectangle)
 	{
-		return rectangleToRectangleCollision(static_cast<RectangleGameObject*>(this), static_cast<RectangleGameObject*>(otherObject));
+		isInCollision = rectangleToRectangleCollision(static_cast<RectangleGameObject*>(this), static_cast<RectangleGameObject*>(otherObject));
 	}
 	// Circle - Circle collision check
 	else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Circle)
 	{
-		return circleToCircleCollision(static_cast<CircleGameObject*>(this), static_cast<CircleGameObject*>(otherObject));
+		isInCollision = circleToCircleCollision(static_cast<CircleGameObject*>(this), static_cast<CircleGameObject*>(otherObject));
 	}
 	// Circle - Rectangle collision check
 	else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Rectangle)
 	{
-		return circleToRectangleCollision(static_cast<CircleGameObject*>(this), static_cast<RectangleGameObject*>(otherObject));
+		isInCollision = circleToRectangleCollision(static_cast<CircleGameObject*>(this), static_cast<RectangleGameObject*>(otherObject));
 	}
 	// Rectangle - Circle check
 	else if (type == GameObjectType::Rectangle && otherObject->type == GameObjectType::Circle)
 	{
-		return circleToRectangleCollision(static_cast<CircleGameObject*>(otherObject), static_cast<RectangleGameObject*>(this));
+		isInCollision = circleToRectangleCollision(static_cast<CircleGameObject*>(otherObject), static_cast<RectangleGameObject*>(this));
 	}
 
-	return false;
+	return isInCollision;
 }
 
 bool GameObject::circleToCircleCollision(CircleGameObject* firstCircle, CircleGameObject* secondCircle)

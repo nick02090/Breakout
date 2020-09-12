@@ -40,6 +40,11 @@ public:
 	/// Resets bricks parameters as it was just created.
 	/// </summary>
 	void reset();
+
+	/// <summary>
+	/// True while the brick is colliding with the ball.
+	/// </summary>
+	bool isInCollisionWithBall = false;
 private:
 	const float Width = 50.f;
 	const float Height = 20.f;
