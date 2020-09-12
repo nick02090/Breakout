@@ -98,6 +98,7 @@ void Game::end()
 	// Quit SDL subsystems
 	IMG_Quit();
 	TTF_Quit();
+	Mix_Quit();
 	SDL_Quit();
 }
 
@@ -107,7 +108,7 @@ bool Game::initSDL()
 	bool success = true;
 
 	// Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
 		std::cout << "SDL could not be initialized! SDL_Error: " << SDL_GetError() << std::endl;
 		success = false;
@@ -148,6 +149,13 @@ bool Game::initSDL()
 				if (TTF_Init() == -1)
 				{
 					std::cout << "SDL_ttf could not be initiliazed! SDL_Error: " << TTF_GetError() << std::endl;
+					success = false;
+				}
+
+				//Initialize SDL_mixer
+				if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+				{
+					printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
 					success = false;
 				}
 			}

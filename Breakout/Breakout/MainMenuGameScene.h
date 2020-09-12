@@ -70,5 +70,6 @@ private:
 	Menu<MainMenuGameScene>::MenuRequest* currentMenuRequests;
 
 	SDL_Texture* backgroundTexture;
+	Mix_Music* backgroundMusic;
 };
 

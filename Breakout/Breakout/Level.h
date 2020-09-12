@@ -114,6 +114,7 @@ private:
 	int rowSpacing;
 	int columnSpacing;
 	std::string backgroundTexturePath;
+	std::string backgroundMusicPath;
 	std::vector<std::vector<Brick*>> bricksLayout;
 	std::vector<Brick*> bricks;
 	std::string name;
@@ -133,6 +134,7 @@ private:
 
 	SDL_Texture* backgroundTexture = NULL;
 	SDL_Texture* HUDTexture = NULL;
+	Mix_Music* backgroundMusic = NULL;
 
 	// HINT: Pause/EndLevel menu is designed to have maximum of three buttons -> thus Top, Middle, Bottom.
 	// Positions of the buttons on the pause menu.

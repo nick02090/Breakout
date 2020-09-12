@@ -11,6 +11,9 @@ MainMenuGameScene::MainMenuGameScene(SDL_Renderer* _renderer) : GameScene(_rende
 
 	// Initialize textures
 	backgroundTexture = NULL;
+
+	// Initialize music
+	backgroundMusic = NULL;
 }
 
 MainMenuGameScene::~MainMenuGameScene()
@@ -18,10 +21,23 @@ MainMenuGameScene::~MainMenuGameScene()
 	// Free loaded images
 	SDL_DestroyTexture(backgroundTexture);
 	backgroundTexture = NULL;
+
+	//Free the music
+	Mix_FreeMusic(backgroundMusic);
+	backgroundMusic = NULL;
 }
 
 void MainMenuGameScene::update(float deltaTime)
 {
+	// If there is no music playing
+	if (Mix_PlayingMusic() == 0)
+	{
+		//Play the music
+		Mix_PlayMusic(backgroundMusic, -1);
+		// Max volume
+		Mix_VolumeMusic(MIX_MAX_VOLUME);
+	}
+
 	// Render background texture to screen
 	SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
 
@@ -60,6 +76,14 @@ bool MainMenuGameScene::loadMedia()
 	if (backgroundTexture == NULL)
 	{
 		std::cout << "Failed to load texture image!" << std::endl;
+		success = false;
+	}
+
+	//Load MainMenu background music
+	backgroundMusic = Mix_LoadMUS("Audio/Soundtracks/bensound-hipjazz.mp3");
+	if (backgroundMusic == NULL)
+	{
+		std::cout << "Failed to load background music!" << std::endl;
 		success = false;
 	}
 

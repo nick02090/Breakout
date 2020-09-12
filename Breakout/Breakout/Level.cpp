@@ -37,6 +37,7 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 		rowSpacing = levelElement->FindAttribute("RowSpacing")->IntValue();
 		columnSpacing = levelElement->FindAttribute("ColumnSpacing")->IntValue();
 		backgroundTexturePath = levelElement->FindAttribute("BackgroundTexture")->Value();
+		backgroundMusicPath = levelElement->FindAttribute("Soundtrack")->Value();
 
 		// Get BrickTypes node and it's attributes
 		tinyxml2::XMLElement* brickTypesElement = levelElement->FirstChild()->ToElement();
@@ -145,6 +146,10 @@ Level::~Level()
 	// Free loaded font
 	TTF_CloseFont(font);
 	font = NULL;
+
+	// Free the music
+	Mix_FreeMusic(backgroundMusic);
+	backgroundMusic = NULL;
 }
 
 bool Level::loadMedia()
@@ -176,6 +181,14 @@ bool Level::loadMedia()
 		success = false;
 	}
 
+	//Load the background music
+	backgroundMusic = Mix_LoadMUS(backgroundMusicPath.c_str());
+	if (backgroundMusic == NULL)
+	{
+		std::cout << "Failed to load background music!" << std::endl;
+		success = false;
+	}
+
 	// Load media for the menus
 	pauseMenu->loadMedia();
 	loseEndLevelMenu->loadMedia();
@@ -186,6 +199,13 @@ bool Level::loadMedia()
 
 void Level::update(float deltaTime)
 {
+	// If there is no music playing
+	if (Mix_PlayingMusic() == 0)
+	{
+		//Play the music
+		Mix_PlayMusic(backgroundMusic, -1);
+	}
+
 	// Render background texture to screen
 	SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
 
@@ -416,6 +436,10 @@ void Level::handleInput(SDL_Event* e)
 
 		return;
 	}
+	else {
+		// Set the music to maximum outside of the pause menu
+		Mix_VolumeMusic(MIX_MAX_VOLUME);
+	}
 
 	// Let lose end level menu handle the input
 	if (levelState == LevelState::LoseEndMenu)
@@ -459,6 +483,8 @@ void Level::handleInput(SDL_Event* e)
 				levelState = LevelState::Paused;
 				pauseMenu->show();
 				player->turnOffAcceleration();
+				// Lower down the music in the pause menu
+				Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
 				break;
 			case SDLK_LEFT:
 				player->increaseAcceleration(true);
