@@ -45,6 +45,16 @@ StoryGameScene::~StoryGameScene()
 	// Delete the player
 	delete player;
 
+	// Delete the chapters
+	delete firstChapter;
+	delete secondChapter;
+	delete thirdChapter;
+
+	// Delete the narration menu
+	delete narrationMenu;
+	// Delete narration menu buttons
+	narrationMenuButtons.clear();
+
 	// Free loaded font
 	TTF_CloseFont(font);
 	font = NULL;

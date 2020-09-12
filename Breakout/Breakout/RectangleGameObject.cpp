@@ -9,6 +9,10 @@ RectangleGameObject::RectangleGameObject(SDL_Renderer* _renderer)
 	height = 0.f;
 }
 
+RectangleGameObject::~RectangleGameObject()
+{
+}
+
 void RectangleGameObject::render(float _widthFactor, float _heightFactor)
 {
 	// Update scale factors

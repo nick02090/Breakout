@@ -135,6 +135,8 @@ private:
 	SDL_Texture* backgroundTexture = NULL;
 	SDL_Texture* HUDTexture = NULL;
 	Mix_Music* backgroundMusic = NULL;
+	Mix_Chunk* fallSound = NULL;
+	Mix_Chunk* playerSound = NULL;
 
 	// HINT: Pause/EndLevel menu is designed to have maximum of three buttons -> thus Top, Middle, Bottom.
 	// Positions of the buttons on the pause menu.
@@ -166,7 +168,6 @@ private:
 		{ TopButtonPosition, TopTextPosition, "RETRY" },
 		{ MiddleButtonPosition, MiddleTextPosition, "QUIT" }
 	};
-	Menu<Level>* nonRetryableLoseEndLevelMenu;
 	std::vector<MenuButton> nonRetryableLoseEndLevelMenuButtons{
 		{ TopButtonPosition, TopTextPosition, "QUIT" }
 	};

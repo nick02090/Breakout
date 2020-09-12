@@ -64,10 +64,8 @@ private:
 		{ CoopButtonPosition, CoopTextPosition, "COOP" } 
 	};
 	
-	//typedef void (MainMenuGameScene::*menuRequest)(void);
 	Menu<MainMenuGameScene>::MenuRequest firstMenuRequests[2] = { &MainMenuGameScene::play, &MainMenuGameScene::quit };
 	Menu<MainMenuGameScene>::MenuRequest secondMenuRequests[3] = { &MainMenuGameScene::story, &MainMenuGameScene::arcade, &MainMenuGameScene::coop};
-	Menu<MainMenuGameScene>::MenuRequest* currentMenuRequests;
 
 	SDL_Texture* backgroundTexture;
 	Mix_Music* backgroundMusic;

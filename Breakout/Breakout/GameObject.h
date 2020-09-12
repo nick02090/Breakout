@@ -22,11 +22,10 @@ public:
 	};
 
 	GameObject(SDL_Renderer* _renderer, GameObjectType _type);
-	~GameObject();
+	virtual ~GameObject();
 	/// <summary>
 	/// Renders an object on the screen by creating a copy of the object.
 	/// </summary>
-	/// <param name="screenPosition">Position on the screen that object is placed to</param>
 	/// <param name="widthFactor">Width scaling factor that scales down objects width</param>
 	/// <param name="heightFactor">Height scaling factor that scales down objects height</param>
 	virtual void render(float widthFactor = 1.0, float heightFactor = 1.0) = 0;

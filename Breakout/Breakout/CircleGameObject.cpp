@@ -6,6 +6,10 @@ CircleGameObject::CircleGameObject(SDL_Renderer* _renderer) : GameObject(_render
 	radius = 0.f;
 }
 
+CircleGameObject::~CircleGameObject()
+{
+}
+
 void CircleGameObject::render(float _widthFactor, float _heightFactor)
 {
 	// Update scale factors

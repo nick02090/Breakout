@@ -6,7 +6,6 @@ MainMenuGameScene::MainMenuGameScene(SDL_Renderer* _renderer) : GameScene(_rende
 	firstMenu = new Menu<MainMenuGameScene>(firstMenuButtons, renderer, firstMenuRequests, this);
 	secondMenu = new Menu<MainMenuGameScene>(secondMenuButtons, renderer, secondMenuRequests, this);
 	currentMenu = firstMenu;
-	currentMenuRequests = firstMenuRequests;
 	currentMenu->show();
 
 	// Initialize textures
@@ -25,6 +24,16 @@ MainMenuGameScene::~MainMenuGameScene()
 	//Free the music
 	Mix_FreeMusic(backgroundMusic);
 	backgroundMusic = NULL;
+
+	// Delete menus
+	currentMenu = NULL;
+	delete firstMenu;
+	firstMenu = NULL;
+	delete secondMenu;
+	secondMenu = NULL;
+	// Delete menu buttons
+	firstMenuButtons.clear();
+	secondMenuButtons.clear();
 }
 
 void MainMenuGameScene::update(float deltaTime)
@@ -62,7 +71,6 @@ void MainMenuGameScene::handleInput(SDL_Event* e)
 		secondMenu->reset();
 		firstMenu->show();
 		currentMenu = firstMenu;
-		currentMenuRequests = firstMenuRequests;
 	}
 }
 
@@ -98,7 +106,6 @@ void MainMenuGameScene::play()
 {
 	// Show the next menu that chooses what to play
 	currentMenu = secondMenu;
-	currentMenuRequests = secondMenuRequests;
 	firstMenu->show();
 	secondMenu->show();
 }

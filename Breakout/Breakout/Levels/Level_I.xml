@@ -11,31 +11,31 @@
 			Id="S"
 			Texture="GameObjects/SoftBrick.png"
 			HitPoints="1"
-			HitSound="path/to/sound"
-			BreakSound="path/to/sound"
+			HitSound="Audio/SFX/zapsplat-collect3.wav"
+			BreakSound="Audio/SFX/zapsplat-break.wav"
 			BreakScore="50" />
 		<!-- Medium Brick -->
 		<BrickType
 			Id="M"
 			Texture="GameObjects/MediumBrick.png"
 			HitPoints="2"
-			HitSound="path/to/sound"
-			BreakSound="path/to/sound"
+			HitSound="Audio/SFX/zapsplat-collect2.wav"
+			BreakSound="Audio/SFX/zapsplat-break.wav"
 			BreakScore="100" />
 		<!-- Hard Brick -->
 		<BrickType
 			Id="H"
 			Texture="GameObjects/HardBrick.png"
 			HitPoints="3"
-			HitSound="path/to/sound"
-			BreakSound="path/to/sound"
+			HitSound="Audio/SFX/zapsplat-collect1.wav"
+			BreakSound="Audio/SFX/zapsplat-break.wav"
 			BreakScore="150" />
 		<!-- Impenetrable Brick -->
 		<BrickType
 			Id="I"
 			Texture="GameObjects/ImpenetrableBrick.png"
 			HitPoints="Infinite"
-			HitSound="path/to/texture" />
+			HitSound="Audio/SFX/zapsplat-collect4.wav" />
 	</BrickTypes>
 	<Bricks>
 		_ _ _ _ _ _ _ _ _ _ _ _ _ _ _

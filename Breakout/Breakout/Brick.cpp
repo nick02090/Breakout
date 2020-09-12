@@ -9,14 +9,10 @@ Brick::Brick(SDL_Renderer* _renderer, std::string _name, std::string _id, std::s
 	width = Width;
 	height = Height;
 	// Load the bricks texture
-	if (texturePath == "")
-	{
-		texture = NULL;
-	}
-	else
-	{
-		texture = util::loadTexture(renderer, texturePath);
-	}
+	texture = util::loadTexture(renderer, texturePath);
+	// Load the bricks sounds
+	breakSound = Mix_LoadWAV(breakSoundPath.c_str());
+	hitSound = Mix_LoadWAV(hitSoundPath.c_str());
 }
 
 Brick::Brick(Brick* _brick) : Brick(_brick->renderer, _brick->name, _brick->id, _brick->texturePath, _brick->hitPoints, _brick->hitSoundPath, _brick->breakSoundPath, _brick->breakScore)
@@ -31,6 +27,17 @@ Brick::Brick(SDL_Renderer* _renderer, std::string _name, std::string _id) : Rect
 	breakScore = 0;
 	hitPoints = 0;
 	isEmpty = true;
+	breakSound = NULL;
+	hitSound = NULL;
+}
+
+Brick::~Brick()
+{
+	// Free the sound effects
+	Mix_FreeChunk(breakSound);
+	Mix_FreeChunk(hitSound);
+	breakSound = NULL;
+	hitSound = NULL;
 }
 
 void Brick::hit()
@@ -39,6 +46,11 @@ void Brick::hit()
 	if (timesHit == hitPoints)
 	{
 		isCrushed = true;
+		Mix_PlayChannel(-1, breakSound, 0);
+	}
+	else
+	{
+		Mix_PlayChannel(-1, hitSound, 0);
 	}
 }
 

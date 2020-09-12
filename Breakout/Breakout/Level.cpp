@@ -137,6 +137,36 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 
 Level::~Level()
 {
+	// Delete the bricks
+	for (auto brick : bricks)
+	{
+		delete brick;
+	}
+	bricks.clear();
+	// Delete the bricks layout
+	for (auto brickRow : bricksLayout)
+	{
+		for (auto brick : brickRow)
+		{
+			delete brick;
+		}
+		brickRow.clear();
+	}
+	bricksLayout.clear();
+	// Delete menus
+	delete pauseMenu;
+	pauseMenu = NULL;
+	delete loseEndLevelMenu;
+	loseEndLevelMenu = NULL;
+	delete winEndLevelMenu;
+	winEndLevelMenu = NULL;
+	// Delete menu buttons
+	retryablePauseMenuButtons.clear();
+	nonRetryablePauseMenuButtons.clear();
+	retryableLoseEndLevelMenuButtons.clear();
+	nonRetryableLoseEndLevelMenuButtons.clear();
+	winEndLevelMenuButtons.clear();
+
 	// Free loaded images
 	SDL_DestroyTexture(backgroundTexture);
 	backgroundTexture = NULL;
@@ -150,6 +180,12 @@ Level::~Level()
 	// Free the music
 	Mix_FreeMusic(backgroundMusic);
 	backgroundMusic = NULL;
+
+	// Free the sound effects
+	Mix_FreeChunk(fallSound);
+	Mix_FreeChunk(playerSound);
+	fallSound = NULL;
+	playerSound = NULL;
 }
 
 bool Level::loadMedia()
@@ -181,13 +217,17 @@ bool Level::loadMedia()
 		success = false;
 	}
 
-	//Load the background music
+	// Load the background music
 	backgroundMusic = Mix_LoadMUS(backgroundMusicPath.c_str());
 	if (backgroundMusic == NULL)
 	{
 		std::cout << "Failed to load background music!" << std::endl;
 		success = false;
 	}
+
+	// Load the sound effects
+	fallSound = Mix_LoadWAV("Audio/SFX/zapsplat-error.wav");
+	playerSound = Mix_LoadWAV("Audio/SFX/zapsplat-bounce.wav");
 
 	// Load media for the menus
 	pauseMenu->loadMedia();
@@ -329,6 +369,8 @@ void Level::update(float deltaTime)
 	}
 	if (ball->hasFellDown())
 	{
+		// Play the sound effect
+		Mix_PlayChannel(-1, fallSound, 0);
 		// Ball fell down off the screen -> reposition at the start
 		currentBallPosition = { 485.f, 618.f };
 		currentBallDirectionX = 1.f;
@@ -345,6 +387,8 @@ void Level::update(float deltaTime)
 	}
 	if (ball->isInCollisionWith(player))
 	{
+		// Play the sound effect
+		Mix_PlayChannel(-1, playerSound, 0);
 		// Ball hits the player -> bounce off by simple invert
 		currentBallDirectionY = -1.f;
 		// Ball hits the player in movement -> bounce off in the way of the movement

@@ -7,6 +7,7 @@ public:
 		std::string _hitSoundPath, std::string _breakSoundPath, int _breakScore);
 	Brick(Brick* _brick);
 	Brick(SDL_Renderer* _renderer, std::string _name, std::string _ID);
+	~Brick();
 	/// <summary>
 	/// Updates bricks parameters as if it was hit by a ball and potentially deletes it.
 	/// </summary>
@@ -74,4 +75,7 @@ private:
 	/// True if it represents an empty space on the screen and shouldn't be rendered or used in any way
 	/// </summary>
 	bool isEmpty = false;
+
+	Mix_Chunk* hitSound;
+	Mix_Chunk* breakSound;
 };

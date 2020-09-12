@@ -27,6 +27,10 @@ public:
 		whiteButtonTexture = NULL;
 		orangeButtonTexture = NULL;
 
+		// Initialize sound effects
+		nextSound = NULL;
+		acceptSound = NULL;
+
 		// Initialize font
 		font = NULL;
 	}
@@ -39,6 +43,12 @@ public:
 		whiteButtonTexture = NULL;
 		SDL_DestroyTexture(orangeButtonTexture);
 		orangeButtonTexture = NULL;
+
+		// Free the sound effects
+		Mix_FreeChunk(nextSound);
+		Mix_FreeChunk(acceptSound);
+		nextSound = NULL;
+		acceptSound = NULL;
 
 		// Free loaded font
 		TTF_CloseFont(font);
@@ -105,6 +115,10 @@ public:
 		{
 			std::cout << "Failed to load font! SDL_Error: " << TTF_GetError() << std::endl;
 		}
+
+		// Load the sound effects
+		nextSound = Mix_LoadWAV("Audio/SFX/zapsplat-next.wav");
+		acceptSound = Mix_LoadWAV("Audio/SFX/zapsplat-accept.wav");
 	}
 	/// <summary>
 	/// Handles input.
@@ -127,19 +141,23 @@ public:
 					// Up arrow key
 				case SDLK_UP:
 					setPrevious();
+					Mix_PlayChannel(-1, nextSound, 0);
 					break;
 					// Down arrow key
 				case SDLK_DOWN:
 					setNext();
+					Mix_PlayChannel(-1, nextSound, 0);
 					break;
 					// Enter key
 				case SDLK_RETURN:
 					requestedElementIndex = currentElementIndex;
 					(menuCaller->*menuRequests[requestedElementIndex])();
+					Mix_PlayChannel(-1, acceptSound, 0);
 					break;
 					// Backspace key
 				case SDLK_BACKSPACE:
 					shouldReverse = true;
+					Mix_PlayChannel(-1, nextSound, 0);
 					break;
 				default:
 					break;
@@ -259,6 +277,8 @@ private:
 	SDL_Texture* blackButtonTexture;
 	SDL_Texture* whiteButtonTexture;
 	SDL_Texture* orangeButtonTexture;
+	Mix_Chunk* nextSound;
+	Mix_Chunk* acceptSound;
 
 	MenuRequest* menuRequests;
 	T* menuCaller;
