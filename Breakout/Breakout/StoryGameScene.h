@@ -23,11 +23,11 @@ public:
 	/// <summary>
 	/// Updates the screen window.
 	/// </summary>
-	void update();
+	void update(float deltaTime);
 	/// <summary>
 	/// Handles input.
 	/// </summary>
-	void handleInput(SDL_Event* e);
+	void handleInput(SDL_Event* e, float deltaTime);
 	/// <summary>
 	/// Loads required media.
 	/// </summary>
@@ -36,19 +36,19 @@ private:
 	/// <summary>
 	/// Handles input when in narration state.
 	/// </summary>
-	void narrationHandleInput(SDL_Event* e);
+	void narrationHandleInput(SDL_Event* e, float deltaTime);
 	/// <summary>
 	/// Handles input when in level state.
 	/// </summary>
-	void levelHandleInput(SDL_Event* e);
+	void levelHandleInput(SDL_Event* e, float deltaTime);
 	/// <summary>
 	/// Updates the screen window when in narration state.
 	/// </summary>
-	void narrationUpdate();
+	void narrationUpdate(float deltaTime);
 	/// <summary>
 	/// Updates the screen window when in level state.
 	/// </summary>
-	void levelUpdate();
+	void levelUpdate(float deltaTime);
 	/// <summary>
 	/// Selected OK on the narration menu.
 	/// </summary>

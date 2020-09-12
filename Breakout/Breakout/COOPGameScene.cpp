@@ -8,11 +8,11 @@ COOPGameScene::~COOPGameScene()
 {
 }
 
-void COOPGameScene::update()
+void COOPGameScene::update(float deltaTime)
 {
 }
 
-void COOPGameScene::handleInput(SDL_Event* e)
+void COOPGameScene::handleInput(SDL_Event* e, float deltaTime)
 {
 }
 

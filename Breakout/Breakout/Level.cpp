@@ -184,7 +184,7 @@ bool Level::loadMedia()
 	return success;
 }
 
-void Level::update()
+void Level::update(float deltaTime)
 {
 	// Render background texture to screen
 	SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
@@ -248,7 +248,7 @@ void Level::update()
 			util::drawText(renderer, font, white, "PAUSED", { 425.f, 150.f }, util::HeadingFontSize);
 
 			// Draw pause menu
-			pauseMenu->update();
+			pauseMenu->update(deltaTime);
 		}
 		// Level has ended in victory
 		else if (levelState == LevelState::WinEndMenu)
@@ -257,7 +257,7 @@ void Level::update()
 			util::drawText(renderer, font, white, "VICTORY", { 425.f, 150.f }, util::HeadingFontSize);
 
 			// Draw win end level menu
-			winEndLevelMenu->update();
+			winEndLevelMenu->update(deltaTime);
 		}
 		// Level has ended in loss
 		else if (levelState == LevelState::LoseEndMenu)
@@ -266,15 +266,15 @@ void Level::update()
 			util::drawText(renderer, font, white, "DEFEAT", { 425.f, 150.f }, util::HeadingFontSize);
 
 			// Draw lose end level menu
-			loseEndLevelMenu->update();
+			loseEndLevelMenu->update(deltaTime);
 		}
 
 		return;
 	}
 
 	// Draw the ball
-	currentBallPosition.x = util::clamp(currentBallPosition.x + currentBallDirectionX * (float)ball->getVelocity(), 0.f, 1024.f - 20.f);
-	currentBallPosition.y = util::clamp(currentBallPosition.y + currentBallDirectionY * (float)ball->getVelocity(), 0.f, 768.f - 50.f);
+	currentBallPosition.x = util::clamp(currentBallPosition.x + currentBallDirectionX * (float)ball->getVelocity() * deltaTime, 0.f, 1024.f - 20.f);
+	currentBallPosition.y = util::clamp(currentBallPosition.y + currentBallDirectionY * (float)ball->getVelocity() * deltaTime, 0.f, 768.f - 50.f);
 	ball->render(currentBallPosition);
 
 	// Update ball upon a collision (bounce off)
@@ -314,7 +314,7 @@ void Level::update()
 		// Ball hits the player -> bounce off by simple invert
 		currentBallDirectionY = -1.f;
 		// Ball hits the player in movement -> bounce off in the way of the movement
-		if (std::abs(player->getVelocity()) >= 10.f) 
+		if (std::abs(player->getVelocity()) >= 25.f) 
 		{
 			currentBallDirectionX = player->getVelocity() >= 0 ? 1.f : -1.f;
 		}
@@ -377,12 +377,12 @@ void Level::update()
 	}
 }
 
-void Level::handleInput(SDL_Event* e)
+void Level::handleInput(SDL_Event* e, float deltaTime)
 {
 	// Let pause menu handle the input
 	if (levelState == LevelState::Paused)
 	{
-		pauseMenu->handleInput(e);
+		pauseMenu->handleInput(e, deltaTime);
 
 		if (pauseMenu->hasRequestedQuit())
 		{
@@ -395,7 +395,7 @@ void Level::handleInput(SDL_Event* e)
 	// Let lose end level menu handle the input
 	if (levelState == LevelState::LoseEndMenu)
 	{
-		loseEndLevelMenu->handleInput(e);
+		loseEndLevelMenu->handleInput(e, deltaTime);
 
 		if (loseEndLevelMenu->hasRequestedQuit())
 		{
@@ -408,7 +408,7 @@ void Level::handleInput(SDL_Event* e)
 	// Let win end level menu handle the input
 	if (levelState == LevelState::WinEndMenu)
 	{
-		winEndLevelMenu->handleInput(e);
+		winEndLevelMenu->handleInput(e, deltaTime);
 
 		if (winEndLevelMenu->hasRequestedQuit())
 		{
@@ -436,7 +436,7 @@ void Level::handleInput(SDL_Event* e)
 				break;
 			case SDLK_LEFT:
 				player->increaseAcceleration(true);
-				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0.f, 1024.f - 100.f);
+				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity() * deltaTime, 0.f, 1024.f - 100.f);
 				if (currentPlayerPosition.x == 0.f)
 				{
 					// Player is right next to a wall -> stop accelerating
@@ -445,7 +445,7 @@ void Level::handleInput(SDL_Event* e)
 				break;
 			case SDLK_RIGHT:
 				player->increaseAcceleration(false);
-				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity(), 0.f, 1024.f - 100.f);
+				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity() * deltaTime, 0.f, 1024.f - 100.f);
 				if (currentPlayerPosition.x == 1024.f - 100.f)
 				{
 					// Player is right next to a wall -> stop accelerating

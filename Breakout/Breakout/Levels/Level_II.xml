@@ -1,6 +1,6 @@
 <Level
 	RowCount="30"
-	ColumnCount="10"
+	ColumnCount="15"
 	RowSpacing="3"
 	ColumnSpacing="3"
 	BackgroundTexture="Textures/Background/ChapterI.png">
@@ -37,10 +37,10 @@
 			HitSound="path/to/texture" />
 	</BrickTypes>
 	<Bricks>
-		I I I S S S S I I I
-		M M M M M M M M M M
-		H M M M M M M M M H
-		H H M M M M M M H H
-		H H H H H H H H H H
+		I I I S S S S S S S S S I I I
+		H H H M M M M M M M M M H H H
+		H M M M M M M M M M M M M M H
+		H M M M M M M M M M M M M M H
+		H H H H H H H H H H H H H H H
 	</Bricks>
 </Level>

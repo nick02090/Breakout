@@ -47,7 +47,7 @@ public:
 	/// <summary>
 	/// Updates the screen window.
 	/// </summary>
-	void update()
+	void update(float deltaTime)
 	{
 		if (isVisible)
 		{
@@ -110,7 +110,7 @@ public:
 	/// Handles input.
 	/// </summary>
 	/// <param name="e"></param>
-	void handleInput(SDL_Event* e)
+	void handleInput(SDL_Event* e, float deltaTime)
 	{
 		// Handle events on the queue
 		while (SDL_PollEvent(e) != 0)

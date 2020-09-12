@@ -33,8 +33,13 @@ void Game::start()
 	// While application is running
 	while (!quit)
 	{
+		// Calculate deltaTime
+		last = now;
+		now = static_cast<int>(SDL_GetPerformanceCounter());
+		deltaTime = (float)((now - last) * 1000 / (float)SDL_GetPerformanceFrequency());
+
 		// Handle input for the current scene
-		gameScene->handleInput(&e);
+		gameScene->handleInput(&e, deltaTime);
 		quit = gameScene->hasRequestedToQuit();
 		if (quit)
 		{
@@ -52,7 +57,7 @@ void Game::start()
 		SDL_RenderClear(renderer);
 
 		// Render screen for the current scene
-		gameScene->update();
+		gameScene->update(deltaTime);
 
 		// Update the screen
 		SDL_RenderPresent(renderer);

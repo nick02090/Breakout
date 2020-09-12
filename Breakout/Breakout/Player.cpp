@@ -93,7 +93,7 @@ void Player::increaseAcceleration(bool isNegativeXAxis)
 	{
 		velocityMultiplier = 1.f;
 	}
-	acceleration += 1.f;
+	acceleration += 2.f;
 }
 
 float Player::getVelocity()

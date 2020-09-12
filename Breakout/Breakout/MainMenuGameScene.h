@@ -8,11 +8,11 @@ public:
 	/// <summary>
 	/// Updates the screen window.
 	/// </summary>
-	void update();
+	void update(float deltaTime);
 	/// <summary>
 	/// Handles input.
 	/// </summary>
-	void handleInput(SDL_Event* e);
+	void handleInput(SDL_Event* e, float deltaTime);
 	/// <summary>
 	/// Loads required media.
 	/// </summary>

@@ -22,11 +22,11 @@ public:
 	/// <summary>
 	/// Updates the screen window.
 	/// </summary>
-	virtual void update() = 0;
+	virtual void update(float deltaTime) = 0;
 	/// <summary>
 	/// Handles input.
 	/// </summary>
-	virtual void handleInput(SDL_Event* e) = 0;
+	virtual void handleInput(SDL_Event* e, float deltaTime) = 0;
 	/// <summary>
 	/// Loads required media.
 	/// </summary>

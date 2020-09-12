@@ -35,12 +35,12 @@ public:
 	/// <summary>
 	/// Updates the screen window.
 	/// </summary>
-	void update();
+	void update(float deltaTime);
 	/// <summary>
 	/// Handles input.
 	/// </summary>
 	/// <param name="e"></param>
-	void handleInput(SDL_Event* e);
+	void handleInput(SDL_Event* e, float deltaTime);
 	/// <summary>
 	/// Determines whether the level has ended.
 	/// </summary>
@@ -87,7 +87,7 @@ private:
 	/// <summary>
 	/// Maximum width of the screen that can be used for rendering bricks layout.
 	/// </summary>
-	const float MaxBricksWidth = 994.f;
+	const float MaxBricksWidth = 1004.f;
 	/// <summary>
 	/// Maximum height of the screen that can be used for rendering bricks layout.
 	/// </summary>
@@ -123,7 +123,7 @@ private:
 
 	util::Position currentPlayerPosition = {445.f, 660.f};
 	util::Position currentBallPosition = {485.f, 618.f};
-	util::Position firstBrickPosition = {15.f, 15.f};
+	util::Position firstBrickPosition = {10.f, 10.f};
 	std::vector<std::vector<util::Position>> bricksPositions;
 
 	float currentBallDirectionX = 1.f;

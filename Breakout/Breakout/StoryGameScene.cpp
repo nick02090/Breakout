@@ -50,34 +50,34 @@ StoryGameScene::~StoryGameScene()
 	font = NULL;
 }
 
-void StoryGameScene::update()
+void StoryGameScene::update(float deltaTime)
 {
 	switch (storyState)
 	{
 	// Render update if story is in narration mode
 	case StoryGameScene::StoryState::Narration:
-		narrationUpdate();
+		narrationUpdate(deltaTime);
 		break;
 	// Render update if story is in playing level mode
 	case StoryGameScene::StoryState::Level:
-		levelUpdate();
+		levelUpdate(deltaTime);
 		break;
 	default:
 		break;
 	}
 }
 
-void StoryGameScene::handleInput(SDL_Event* e)
+void StoryGameScene::handleInput(SDL_Event* e, float deltaTime)
 {
 	switch (storyState)
 	{
 	// Handle input if story is in narration mode
 	case StoryGameScene::StoryState::Narration:
-		narrationHandleInput(e);
+		narrationHandleInput(e, deltaTime);
 		break;
 	// Handle input if story is in playing level mode
 	case StoryGameScene::StoryState::Level:
-		levelHandleInput(e);
+		levelHandleInput(e, deltaTime);
 		break;
 	default:
 		break;
@@ -111,17 +111,17 @@ bool StoryGameScene::loadMedia()
 	return success;
 }
 
-void StoryGameScene::narrationHandleInput(SDL_Event* e)
+void StoryGameScene::narrationHandleInput(SDL_Event* e, float deltaTime)
 {
-	narrationMenu->handleInput(e);
+	narrationMenu->handleInput(e, deltaTime);
 
 	shouldQuit = narrationMenu->hasRequestedQuit() | shouldQuit;
 }
 
-void StoryGameScene::levelHandleInput(SDL_Event* e)
+void StoryGameScene::levelHandleInput(SDL_Event* e, float deltaTime)
 {
 	// Let level handle it's own input
-	currentLevel->handleInput(e);
+	currentLevel->handleInput(e, deltaTime);
 	// Check if level has ended
 	if (currentLevel->hasEnded())
 	{
@@ -152,7 +152,7 @@ void StoryGameScene::levelHandleInput(SDL_Event* e)
 	}
 }
 
-void StoryGameScene::narrationUpdate()
+void StoryGameScene::narrationUpdate(float deltaTime)
 {
 	// Render background texture to screen
 	SDL_RenderCopy(renderer, backgroundTransitionTexture, NULL, NULL);
@@ -165,13 +165,13 @@ void StoryGameScene::narrationUpdate()
 	util::drawText(renderer, font, white, currentChapterLine.c_str(), {screenWidth/10.f, screenHeight/2.f}, util::ParagraphFontSize);
 
 	// Draw confirm button and it's text
-	narrationMenu->update();
+	narrationMenu->update(deltaTime);
 }
 
-void StoryGameScene::levelUpdate()
+void StoryGameScene::levelUpdate(float deltaTime)
 {
 	// Render the level on a screen
-	currentLevel->update();
+	currentLevel->update(deltaTime);
 }
 
 void StoryGameScene::ok()

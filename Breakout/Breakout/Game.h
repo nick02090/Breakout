@@ -41,4 +41,8 @@ private:
 	int fpsPrint = 0;
 	int previousTime = 0;
 	int currentTime = 0;
+
+	int last = 0;
+	int now;
+	float deltaTime = 0;
 };

@@ -8,11 +8,11 @@ ArcadeGameScene::~ArcadeGameScene()
 {
 }
 
-void ArcadeGameScene::update()
+void ArcadeGameScene::update(float deltaTime)
 {
 }
 
-void ArcadeGameScene::handleInput(SDL_Event* e)
+void ArcadeGameScene::handleInput(SDL_Event* e, float deltaTime)
 {
 }
 

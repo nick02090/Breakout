@@ -20,20 +20,20 @@ MainMenuGameScene::~MainMenuGameScene()
 	backgroundTexture = NULL;
 }
 
-void MainMenuGameScene::update()
+void MainMenuGameScene::update(float deltaTime)
 {
 	// Render background texture to screen
 	SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
 
 	// Render menus
-	firstMenu->update();
-	secondMenu->update();
+	firstMenu->update(deltaTime);
+	secondMenu->update(deltaTime);
 }
 
-void MainMenuGameScene::handleInput(SDL_Event* e)
+void MainMenuGameScene::handleInput(SDL_Event* e, float deltaTime)
 {
 	// Let current menu handle the input
-	currentMenu->handleInput(e);
+	currentMenu->handleInput(e, deltaTime);
 
 	// Quit if current menu has requested to quit (or it was already called upon)
 	shouldQuit = currentMenu->hasRequestedQuit() | shouldQuit;

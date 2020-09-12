@@ -57,7 +57,7 @@ private:
 	/// </summary>
 	const float Radius = 10.f;
 
-	float velocity = 0.08f;
+	float velocity = 0.25f;
 	WallHit previousWallHit;
 	SDL_Texture* texture;
 };

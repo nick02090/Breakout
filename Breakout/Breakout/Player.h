@@ -56,7 +56,7 @@ public:
 	float getVelocity();
 private:
 	const std::string TexturePath = "GameObjects/Player.png";
-	const int MaxLives = 3;
+	const int MaxLives = 5;
 
 	const float Width = 100.f;
 	const float Height = 20.f;
@@ -66,8 +66,8 @@ private:
 	int currentLives;
 	int currentScore;
 
-	const float MinVelocity = 5.f;
-	const float MaxVelocity = 20.f;
+	const float MinVelocity = 10.f;
+	const float MaxVelocity = 50.f;
 	float acceleration = 0.f;
 	float velocity = MinVelocity;
 	float velocityMultiplier = -1.f;
