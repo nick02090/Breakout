@@ -40,7 +40,7 @@ public:
 	/// Handles input.
 	/// </summary>
 	/// <param name="e"></param>
-	void handleInput(SDL_Event* e, float deltaTime);
+	void handleInput(SDL_Event* e);
 	/// <summary>
 	/// Determines whether the level has ended.
 	/// </summary>

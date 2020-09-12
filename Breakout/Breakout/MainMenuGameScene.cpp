@@ -30,10 +30,10 @@ void MainMenuGameScene::update(float deltaTime)
 	secondMenu->update(deltaTime);
 }
 
-void MainMenuGameScene::handleInput(SDL_Event* e, float deltaTime)
+void MainMenuGameScene::handleInput(SDL_Event* e)
 {
 	// Let current menu handle the input
-	currentMenu->handleInput(e, deltaTime);
+	currentMenu->handleInput(e);
 
 	// Quit if current menu has requested to quit (or it was already called upon)
 	shouldQuit = currentMenu->hasRequestedQuit() | shouldQuit;

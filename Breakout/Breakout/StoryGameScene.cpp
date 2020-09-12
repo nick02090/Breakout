@@ -67,17 +67,17 @@ void StoryGameScene::update(float deltaTime)
 	}
 }
 
-void StoryGameScene::handleInput(SDL_Event* e, float deltaTime)
+void StoryGameScene::handleInput(SDL_Event* e)
 {
 	switch (storyState)
 	{
 	// Handle input if story is in narration mode
 	case StoryGameScene::StoryState::Narration:
-		narrationHandleInput(e, deltaTime);
+		narrationHandleInput(e);
 		break;
 	// Handle input if story is in playing level mode
 	case StoryGameScene::StoryState::Level:
-		levelHandleInput(e, deltaTime);
+		levelHandleInput(e);
 		break;
 	default:
 		break;
@@ -111,17 +111,17 @@ bool StoryGameScene::loadMedia()
 	return success;
 }
 
-void StoryGameScene::narrationHandleInput(SDL_Event* e, float deltaTime)
+void StoryGameScene::narrationHandleInput(SDL_Event* e)
 {
-	narrationMenu->handleInput(e, deltaTime);
+	narrationMenu->handleInput(e);
 
 	shouldQuit = narrationMenu->hasRequestedQuit() | shouldQuit;
 }
 
-void StoryGameScene::levelHandleInput(SDL_Event* e, float deltaTime)
+void StoryGameScene::levelHandleInput(SDL_Event* e)
 {
 	// Let level handle it's own input
-	currentLevel->handleInput(e, deltaTime);
+	currentLevel->handleInput(e);
 	// Check if level has ended
 	if (currentLevel->hasEnded())
 	{

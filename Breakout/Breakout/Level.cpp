@@ -208,6 +208,17 @@ void Level::update(float deltaTime)
 	util::drawText(renderer, font, red, std::to_string(player->getCurrentLives()).c_str(), livesPosition, util::ParagraphFontSize);
 
 	// Draw the player
+	currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity() * deltaTime, 0.f, 1024.f - 100.f);
+	// Player is right next to a left wall -> stop accelerating
+	if (currentPlayerPosition.x == 0.f)
+	{
+		player->turnOffAcceleration();
+	}
+	// Player is right next to a right wall -> stop accelerating
+	if (currentPlayerPosition.x == 1024.f - 100.f)
+	{
+		player->turnOffAcceleration();
+	}
 	player->render(currentPlayerPosition);
 
 	// Level is paused or just ended -> just draw the ball and bricks without updating it's location and without collision checks
@@ -314,7 +325,7 @@ void Level::update(float deltaTime)
 		// Ball hits the player -> bounce off by simple invert
 		currentBallDirectionY = -1.f;
 		// Ball hits the player in movement -> bounce off in the way of the movement
-		if (std::abs(player->getVelocity()) >= 25.f) 
+		if (std::abs(player->getVelocity()) >= 0.25f) 
 		{
 			currentBallDirectionX = player->getVelocity() >= 0 ? 1.f : -1.f;
 		}
@@ -377,12 +388,12 @@ void Level::update(float deltaTime)
 	}
 }
 
-void Level::handleInput(SDL_Event* e, float deltaTime)
+void Level::handleInput(SDL_Event* e)
 {
 	// Let pause menu handle the input
 	if (levelState == LevelState::Paused)
 	{
-		pauseMenu->handleInput(e, deltaTime);
+		pauseMenu->handleInput(e);
 
 		if (pauseMenu->hasRequestedQuit())
 		{
@@ -395,7 +406,7 @@ void Level::handleInput(SDL_Event* e, float deltaTime)
 	// Let lose end level menu handle the input
 	if (levelState == LevelState::LoseEndMenu)
 	{
-		loseEndLevelMenu->handleInput(e, deltaTime);
+		loseEndLevelMenu->handleInput(e);
 
 		if (loseEndLevelMenu->hasRequestedQuit())
 		{
@@ -408,7 +419,7 @@ void Level::handleInput(SDL_Event* e, float deltaTime)
 	// Let win end level menu handle the input
 	if (levelState == LevelState::WinEndMenu)
 	{
-		winEndLevelMenu->handleInput(e, deltaTime);
+		winEndLevelMenu->handleInput(e);
 
 		if (winEndLevelMenu->hasRequestedQuit())
 		{
@@ -436,21 +447,9 @@ void Level::handleInput(SDL_Event* e, float deltaTime)
 				break;
 			case SDLK_LEFT:
 				player->increaseAcceleration(true);
-				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity() * deltaTime, 0.f, 1024.f - 100.f);
-				if (currentPlayerPosition.x == 0.f)
-				{
-					// Player is right next to a wall -> stop accelerating
-					player->turnOffAcceleration();
-				}
 				break;
 			case SDLK_RIGHT:
 				player->increaseAcceleration(false);
-				currentPlayerPosition.x = util::clamp(currentPlayerPosition.x + player->getVelocity() * deltaTime, 0.f, 1024.f - 100.f);
-				if (currentPlayerPosition.x == 1024.f - 100.f)
-				{
-					// Player is right next to a wall -> stop accelerating
-					player->turnOffAcceleration();
-				}
 				break;
 			default:
 				break;

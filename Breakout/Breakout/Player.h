@@ -66,10 +66,9 @@ private:
 	int currentLives;
 	int currentScore;
 
-	const float MinVelocity = 10.f;
-	const float MaxVelocity = 50.f;
+	const float MaxVelocity = 0.5f;
 	float acceleration = 0.f;
-	float velocity = MinVelocity;
+	float velocity = 0.f;
 	float velocityMultiplier = -1.f;
 };
 

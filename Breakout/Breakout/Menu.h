@@ -110,7 +110,7 @@ public:
 	/// Handles input.
 	/// </summary>
 	/// <param name="e"></param>
-	void handleInput(SDL_Event* e, float deltaTime)
+	void handleInput(SDL_Event* e)
 	{
 		// Handle events on the queue
 		while (SDL_PollEvent(e) != 0)

@@ -42,7 +42,7 @@ void Player::render(util::Position _screenPosition, float _widthFactor, float _h
 	SDL_RenderCopyF(renderer, texture, NULL, &rect);
 
 	// Update velocity
-	velocity = util::clamp(velocity - 1.f, MinVelocity, MaxVelocity);
+	velocity = util::clamp(velocity - 0.4f, 0.f, MaxVelocity);
 }
 
 void Player::addToScore(int value)
@@ -75,7 +75,7 @@ void Player::reset()
 	currentLives = MaxLives;
 	currentScore = 0;
 	acceleration = 0.f;
-	velocity = MinVelocity;
+	velocity = 0.f;
 }
 
 void Player::turnOffAcceleration()
@@ -93,11 +93,11 @@ void Player::increaseAcceleration(bool isNegativeXAxis)
 	{
 		velocityMultiplier = 1.f;
 	}
-	acceleration += 2.f;
+	acceleration += 0.02f;
 }
 
 float Player::getVelocity()
 {
-	velocity = util::clamp(velocity + acceleration, MinVelocity, MaxVelocity);
+	velocity = util::clamp(velocity + acceleration, 0.f, MaxVelocity);
 	return velocity * velocityMultiplier;
 }

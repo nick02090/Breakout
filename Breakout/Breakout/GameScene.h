@@ -26,7 +26,7 @@ public:
 	/// <summary>
 	/// Handles input.
 	/// </summary>
-	virtual void handleInput(SDL_Event* e, float deltaTime) = 0;
+	virtual void handleInput(SDL_Event* e) = 0;
 	/// <summary>
 	/// Loads required media.
 	/// </summary>
