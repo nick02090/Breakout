@@ -1,20 +1,12 @@
 #pragma once
-#include "GameObject.h"
-class Brick : public GameObject
+#include "RectangleGameObject.h"
+class Brick : public RectangleGameObject
 {
 public:
 	Brick(SDL_Renderer* _renderer, std::string _name, std::string _ID, std::string _texturePath, int _hitPoints,
 		std::string _hitSoundPath, std::string _breakSoundPath, int _breakScore);
 	Brick(Brick* _brick);
 	Brick(SDL_Renderer* _renderer, std::string _name, std::string _ID);
-	~Brick();
-	/// <summary>
-	/// Renders brick on the screen.
-	/// </summary>
-	/// <param name="_screenPosition">Screen position that the brick is rendered on</param>
-	/// <param name="widthFactor">Width factor that is applied to the width size of the rendered brick texture</param>
-	/// <param name="heightFactor">Height factor that is applied to the height size of the rendered brick texture</param>
-	void render(util::Position _screenPosition, float widthFactor = 1.0, float heightFactor = 1.0);
 	/// <summary>
 	/// Updates bricks parameters as if it was hit by a ball and potentially deletes it.
 	/// </summary>
@@ -77,6 +69,4 @@ private:
 	/// True if it represents an empty space on the screen and shouldn't be rendered or used in any way
 	/// </summary>
 	bool isEmpty = false;
-
-	SDL_Texture* texture;
 };

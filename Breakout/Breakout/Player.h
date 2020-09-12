@@ -1,17 +1,15 @@
 #pragma once
-#include "GameObject.h"
-class Player : public GameObject
+#include "RectangleGameObject.h"
+class Player : public RectangleGameObject
 {
 public:
 	Player(SDL_Renderer* _renderer);
-	~Player();
 	/// <summary>
 	/// Renders the player on the screen.
 	/// </summary>
-	/// <param name="_screenPosition">Screen position that the player is rendered on</param>
 	/// <param name="widthFactor">Width factor that is applied to the width size of the rendered player texture</param>
 	/// <param name="heightFactor">Height factor that is applied to the height size of the rendered player texture</param>
-	void render(util::Position _screenPosition, float widthFactor = 1.0, float heightFactor = 1.0);
+	void render(float widthFactor = 1.0, float heightFactor = 1.0);
 	/// <summary>
 	/// Add points to the player score.
 	/// </summary>
@@ -56,13 +54,10 @@ public:
 	float getVelocity();
 private:
 	const std::string TexturePath = "GameObjects/Player.png";
-	const int MaxLives = 5;
-
 	const float Width = 100.f;
 	const float Height = 20.f;
 
-	SDL_Texture* texture;
-
+	const int MaxLives = 5;
 	int currentLives;
 	int currentScore;
 

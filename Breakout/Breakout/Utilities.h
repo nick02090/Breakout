@@ -6,6 +6,7 @@
 #include <SDL_ttf.h>
 namespace util
 {
+	// Game constants
 	const int HeadingFontSize = 40;
 	const int ParagraphFontSize = 28;
 

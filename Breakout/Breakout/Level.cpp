@@ -219,13 +219,14 @@ void Level::update(float deltaTime)
 	{
 		player->turnOffAcceleration();
 	}
-	player->render(currentPlayerPosition);
+	player->screenPosition = currentPlayerPosition;
+	player->render();
 
 	// Level is paused or just ended -> just draw the ball and bricks without updating it's location and without collision checks
 	if (levelState == LevelState::Paused || levelState == LevelState::WinEndMenu || levelState == LevelState::LoseEndMenu)
 	{
 		// Draw the ball
-		ball->render(currentBallPosition);
+		ball->render();
 
 		// Draw the bricks
 		for (int row = 0; row < static_cast<int>(bricksLayout.size()); row++)
@@ -241,8 +242,8 @@ void Level::update(float deltaTime)
 				{
 					continue;
 				}
-				util::Position brickPosition = bricksPositions.at(row).at(col);
-				brick->render(brickPosition, bricksWidthFactor, bricksHeightFactor);
+				brick->screenPosition = bricksPositions.at(row).at(col);
+				brick->render(bricksWidthFactor, bricksHeightFactor);
 			}
 		}
 
@@ -286,7 +287,8 @@ void Level::update(float deltaTime)
 	// Draw the ball
 	currentBallPosition.x = util::clamp(currentBallPosition.x + currentBallDirectionX * (float)ball->getVelocity() * deltaTime, 0.f, 1024.f - 20.f);
 	currentBallPosition.y = util::clamp(currentBallPosition.y + currentBallDirectionY * (float)ball->getVelocity() * deltaTime, 0.f, 768.f - 50.f);
-	ball->render(currentBallPosition);
+	ball->screenPosition = currentBallPosition;
+	ball->render();
 
 	// Update ball upon a collision (bounce off)
 	if (ball->hasHitWall())
@@ -373,8 +375,8 @@ void Level::update(float deltaTime)
 					continue;
 				}
 			}
-			util::Position brickPosition = bricksPositions.at(row).at(col);
-			brick->render(brickPosition, bricksWidthFactor, bricksHeightFactor);
+			brick->screenPosition = bricksPositions.at(row).at(col);
+			brick->render(bricksWidthFactor, bricksHeightFactor);
 			if (brick->isBreakable())
 			{
 				numberOfRemainingBricks++;

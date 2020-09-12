@@ -147,6 +147,7 @@
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Breakout.cpp" />
     <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="CircleGameObject.cpp" />
     <ClCompile Include="COOPGameScene.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="MainMenuGameScene.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RectangleGameObject.cpp" />
     <ClCompile Include="StoryChapter.cpp" />
     <ClCompile Include="StoryGameScene.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
@@ -165,6 +167,7 @@
     <ClInclude Include="ArcadeGameScene.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Brick.h" />
+    <ClInclude Include="CircleGameObject.h" />
     <ClInclude Include="COOPGameScene.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
@@ -173,6 +176,7 @@
     <ClInclude Include="MainMenuGameScene.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RectangleGameObject.h" />
     <ClInclude Include="StoryChapter.h" />
     <ClInclude Include="StoryGameScene.h" />
     <ClInclude Include="tinyxml2.h" />

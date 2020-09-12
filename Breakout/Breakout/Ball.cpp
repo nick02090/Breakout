@@ -1,45 +1,13 @@
 #include "Ball.h"
 
-Ball::Ball(SDL_Renderer* _renderer) : GameObject(_renderer, GameObjectType::Circle)
+Ball::Ball(SDL_Renderer* _renderer) : CircleGameObject(_renderer)
 {
-	// Load all necessary assets
-	texture = util::loadTexture(renderer, TexturePath);
 	// Set initial previous wall hit
 	previousWallHit = WallHit::Default;
-	// Set ball size parameters
-	width = Width;
-	height = Height;
+	// Set the radius
 	radius = Radius;
-	// Set ball size factors
-	widthFactor = 1.f;
-	heightFactor = 1.f;
-}
-
-Ball::~Ball()
-{
-	// Free loaded images
-	SDL_DestroyTexture(texture);
-	texture = NULL;
-}
-
-void Ball::render(util::Position _screenPosition, float _widthFactor, float _heightFactor)
-{
-	// Update scale factors
-	widthFactor = _widthFactor;
-	heightFactor = _heightFactor;
-
-	// Update position on the screen
-	screenPosition = _screenPosition;
-
-	// Create a rect to position the texture
-	SDL_FRect rect;
-	rect.x = screenPosition.x;
-	rect.y = screenPosition.y;
-	rect.w = width / widthFactor;
-	rect.h = height / heightFactor;
-
-	// Render the texture on the screen
-	SDL_RenderCopyF(renderer, texture, NULL, &rect);
+	// Load the balls texture
+	texture = util::loadTexture(renderer, TexturePath);
 }
 
 bool Ball::hasHitWall()

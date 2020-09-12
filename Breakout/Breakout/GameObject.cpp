@@ -1,16 +1,23 @@
 #include "GameObject.h"
+#include "CircleGameObject.h"
+#include "RectangleGameObject.h"
 
 GameObject::GameObject(SDL_Renderer* _renderer, GameObjectType _type) : renderer(_renderer), type(_type)
 {
 	// Set default values for the member variables
-	height = 0.f;
-	width = 0.f;
-	radius = 0.f;
 	heightFactor = 1.f;
 	widthFactor = 1.f;
 	screenPosition = util::Position{ 0.f, 0.f };
 	verticalHitPosition = HitPosition::Default;
 	horizontalHitPosition = HitPosition::Default;
+	texture = NULL;
+}
+
+GameObject::~GameObject()
+{
+	// Free loaded images
+	SDL_DestroyTexture(texture);
+	texture = NULL;
 }
 
 bool GameObject::isInCollisionWith(GameObject* otherObject)
@@ -18,66 +25,66 @@ bool GameObject::isInCollisionWith(GameObject* otherObject)
 	// Rectangle - Rectangle collision check
 	if (type == GameObjectType::Rectangle && otherObject->type == GameObjectType::Rectangle)
 	{
-		return rectangleToRectangleCollision(this, otherObject);
+		return rectangleToRectangleCollision(static_cast<RectangleGameObject*>(this), static_cast<RectangleGameObject*>(otherObject));
 	}
 	// Circle - Circle collision check
 	else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Circle)
 	{
-		return circleToCircleCollision(this, otherObject);
+		return circleToCircleCollision(static_cast<CircleGameObject*>(this), static_cast<CircleGameObject*>(otherObject));
 	}
 	// Circle - Rectangle collision check
 	else if (type == GameObjectType::Circle && otherObject->type == GameObjectType::Rectangle)
 	{
-		return circleToRectangleCollision(this, otherObject);
+		return circleToRectangleCollision(static_cast<CircleGameObject*>(this), static_cast<RectangleGameObject*>(otherObject));
 	}
 	// Rectangle - Circle check
 	else if (type == GameObjectType::Rectangle && otherObject->type == GameObjectType::Circle)
 	{
-		return circleToRectangleCollision(otherObject, this);
+		return circleToRectangleCollision(static_cast<CircleGameObject*>(otherObject), static_cast<RectangleGameObject*>(this));
 	}
 
 	return false;
 }
 
-bool GameObject::circleToCircleCollision(GameObject* firstCircle, GameObject* secondCircle)
+bool GameObject::circleToCircleCollision(CircleGameObject* firstCircle, CircleGameObject* secondCircle)
 {
 	util::Position firstCircleCenter = {
-		firstCircle->screenPosition.x + firstCircle->radius,
-		firstCircle->screenPosition.y + firstCircle->radius
+		firstCircle->screenPosition.x + firstCircle->getRadius(),
+		firstCircle->screenPosition.y + firstCircle->getRadius()
 	};
 
 	util::Position secondCircleCenter = {
-		secondCircle->screenPosition.x + secondCircle->radius,
-		secondCircle->screenPosition.y + secondCircle->radius
+		secondCircle->screenPosition.x + secondCircle->getRadius(),
+		secondCircle->screenPosition.y + secondCircle->getRadius()
 	};
 
 	float distX = firstCircleCenter.x - secondCircleCenter.x;
 	float distY = firstCircleCenter.y - secondCircleCenter.y;
 	float distance = std::sqrt((distX * distX) + (distY * distY));
-	if (distance <= firstCircle->radius + secondCircle->radius)
+	if (distance <= firstCircle->getRadius() + secondCircle->getRadius())
 	{
 		return true;
 	}
 	return false;
 }
 
-bool GameObject::rectangleToRectangleCollision(GameObject* firstRectangle, GameObject* secondRectangle)
+bool GameObject::rectangleToRectangleCollision(RectangleGameObject* firstRectangle, RectangleGameObject* secondRectangle)
 {
-	if (firstRectangle->screenPosition.x + firstRectangle->width / firstRectangle->widthFactor >= secondRectangle->screenPosition.x
-		&& firstRectangle->screenPosition.x <= secondRectangle->screenPosition.x + secondRectangle->width / secondRectangle->widthFactor
-		&& firstRectangle->screenPosition.y + firstRectangle->height / firstRectangle->heightFactor >= secondRectangle->screenPosition.y
-		&& firstRectangle->screenPosition.y <= secondRectangle->screenPosition.y + secondRectangle->height / secondRectangle->heightFactor)
+	if (firstRectangle->screenPosition.x + firstRectangle->getWidth() / firstRectangle->widthFactor >= secondRectangle->screenPosition.x
+		&& firstRectangle->screenPosition.x <= secondRectangle->screenPosition.x + secondRectangle->getWidth() / secondRectangle->widthFactor
+		&& firstRectangle->screenPosition.y + firstRectangle->getHeight() / firstRectangle->heightFactor >= secondRectangle->screenPosition.y
+		&& firstRectangle->screenPosition.y <= secondRectangle->screenPosition.y + secondRectangle->getHeight() / secondRectangle->heightFactor)
 	{
 		return true;
 	}
 	return false;
 }
 
-bool GameObject::circleToRectangleCollision(GameObject* circle, GameObject* rectangle)
+bool GameObject::circleToRectangleCollision(CircleGameObject* circle, RectangleGameObject* rectangle)
 {
 	util::Position circleCenter = {
-		circle->screenPosition.x + circle->radius,
-		circle->screenPosition.y + circle->radius
+		circle->screenPosition.x + circle->getRadius(),
+		circle->screenPosition.y + circle->getRadius()
 	};
 
 	float testX = circleCenter.x;
@@ -89,9 +96,9 @@ bool GameObject::circleToRectangleCollision(GameObject* circle, GameObject* rect
 		testX = rectangle->screenPosition.x;
 	}
 	// Right edge
-	else if (circleCenter.x > rectangle->screenPosition.x + rectangle->width / rectangle->widthFactor)
+	else if (circleCenter.x > rectangle->screenPosition.x + rectangle->getWidth() / rectangle->widthFactor)
 	{
-		testX = rectangle->screenPosition.x + rectangle->width / rectangle->widthFactor;
+		testX = rectangle->screenPosition.x + rectangle->getWidth() / rectangle->widthFactor;
 	}
 
 	// Top edge
@@ -101,22 +108,22 @@ bool GameObject::circleToRectangleCollision(GameObject* circle, GameObject* rect
 		rectangle->verticalHitPosition = HitPosition::Top;
 	}
 	// Bottom edge
-	else if (circleCenter.y > rectangle->screenPosition.y + rectangle->height / rectangle->heightFactor)
+	else if (circleCenter.y > rectangle->screenPosition.y + rectangle->getHeight() / rectangle->heightFactor)
 	{
-		testY = rectangle->screenPosition.y + rectangle->height / rectangle->heightFactor;
+		testY = rectangle->screenPosition.y + rectangle->getHeight() / rectangle->heightFactor;
 		rectangle->verticalHitPosition = HitPosition::Bottom;
 	}
 
 	float distX = circleCenter.x - testX;
 	float distY = circleCenter.y - testY;
 	float distance = std::sqrt((distX * distX) + (distY * distY));
-	if (distance <= circle->radius)
+	if (distance <= circle->getRadius())
 	{
 		if (circleCenter.x <= rectangle->screenPosition.x + 15.f)
 		{
 			rectangle->horizontalHitPosition = HitPosition::LeftEdge;
 		}
-		else if (circleCenter.x >= rectangle->screenPosition.x + rectangle->width - 15.f)
+		else if (circleCenter.x >= rectangle->screenPosition.x + rectangle->getWidth() - 15.f)
 		{
 			rectangle->horizontalHitPosition = HitPosition::RightEdge;
 		}
