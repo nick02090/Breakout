@@ -148,7 +148,6 @@
     <ClCompile Include="Breakout.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="CircleGameObject.cpp" />
-    <ClCompile Include="COOPGameScene.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameScene.cpp" />
@@ -165,7 +164,6 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="CircleGameObject.h" />
-    <ClInclude Include="COOPGameScene.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameScene.h" />

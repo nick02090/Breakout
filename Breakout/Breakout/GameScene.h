@@ -9,7 +9,6 @@ enum class GameState
 	MainMenu,
 	Story,
 	Arcade,
-	Coop,
 	Default
 };
 

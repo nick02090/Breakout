@@ -45,9 +45,6 @@
     <ClCompile Include="ArcadeGameScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="COOPGameScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ArcadeGameScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="COOPGameScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StoryChapter.h">

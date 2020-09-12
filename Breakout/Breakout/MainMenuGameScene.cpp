@@ -127,9 +127,3 @@ void MainMenuGameScene::arcade()
 	// Play arcade mode
 	nextGameState = GameState::Arcade;
 }
-
-void MainMenuGameScene::coop()
-{
-	// Play coop mode
-	nextGameState = GameState::Coop;
-}

@@ -2,7 +2,6 @@
 #include "MainMenuGameScene.h"
 #include "StoryGameScene.h"
 #include "ArcadeGameScene.h"
-#include "COOPGameScene.h"
 
 Game::Game() 
 {
@@ -179,9 +178,6 @@ void Game::initScene()
 		break;
 	case GameState::Arcade:
 		gameScene = new ArcadeGameScene(renderer);
-		break;
-	case GameState::Coop:
-		gameScene = new COOPGameScene(renderer);
 		break;
 	default:
 		std::cout << "Invalid game state!" << std::endl;
