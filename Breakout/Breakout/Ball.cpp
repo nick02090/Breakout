@@ -10,6 +10,9 @@ Ball::Ball(SDL_Renderer* _renderer) : GameObject(_renderer, GameObjectType::Circ
 	width = Width;
 	height = Height;
 	radius = Radius;
+	// Set ball size factors
+	widthFactor = 1.f;
+	heightFactor = 1.f;
 }
 
 Ball::~Ball()
@@ -19,8 +22,12 @@ Ball::~Ball()
 	texture = NULL;
 }
 
-void Ball::render(util::Position _screenPosition, float widthFactor, float heightFactor)
+void Ball::render(util::Position _screenPosition, float _widthFactor, float _heightFactor)
 {
+	// Update scale factors
+	widthFactor = _widthFactor;
+	heightFactor = _heightFactor;
+
 	// Update position on the screen
 	screenPosition = _screenPosition;
 

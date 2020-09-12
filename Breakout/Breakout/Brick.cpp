@@ -11,6 +11,9 @@ Brick::Brick(SDL_Renderer* _renderer, std::string _name, std::string _id, std::s
 	// Set brick size
 	width = Width;
 	height = Height;
+	// Set brick size factors
+	widthFactor = 1.f;
+	heightFactor = 1.f;
 }
 
 Brick::Brick(Brick* _brick) : Brick(_brick->renderer, _brick->name, _brick->id, _brick->texturePath, _brick->hitPoints, _brick->hitSoundPath, _brick->breakSoundPath, _brick->breakScore)
@@ -35,8 +38,12 @@ Brick::~Brick()
 	texture = NULL;
 }
 
-void Brick::render(util::Position _screenPosition, float widthFactor, float heightFactor)
+void Brick::render(util::Position _screenPosition, float _widthFactor, float _heightFactor)
 {
+	// Update scale factors
+	widthFactor = _widthFactor;
+	heightFactor = _heightFactor;
+
 	// Update position on the screen
 	screenPosition = _screenPosition;
 

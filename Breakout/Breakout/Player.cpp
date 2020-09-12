@@ -7,9 +7,12 @@ Player::Player(SDL_Renderer* _renderer) : GameObject(_renderer, GameObjectType::
 	// Set member variables
 	currentLives = MaxLives;
 	currentScore = 0;
-
+	// Set player size
 	width = Width;
 	height = Height;
+	// Set player size factors
+	widthFactor = 1.f;
+	heightFactor = 1.f;
 }
 
 Player::~Player()
@@ -19,8 +22,12 @@ Player::~Player()
 	texture = NULL;
 }
 
-void Player::render(util::Position _screenPosition, float widthFactor, float heightFactor)
+void Player::render(util::Position _screenPosition, float _widthFactor, float _heightFactor)
 {
+	// Update scale factors
+	widthFactor = _widthFactor;
+	heightFactor = _heightFactor;
+
 	// Update position on the screen
 	screenPosition = _screenPosition;
 
