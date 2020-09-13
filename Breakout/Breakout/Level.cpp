@@ -135,6 +135,24 @@ Level::Level(std::string path, SDL_Renderer* _renderer, Player* _player, std::st
 	}
 }
 
+Level::Level(SDL_Renderer* _renderer, Player* _player, std::string _name, int _rowCount, int _columnCount, int _rowSpacing, int _columnSpacing, 
+	std::string _backgroundTexturePath, std::string _backgroundMusicPath, std::vector<Brick*> _bricks, std::vector<std::vector<Brick*>> _bricksLayout,
+	float _bricksWidthFactor, float _bricksHeightFactor, std::vector<std::vector<util::Position>> _bricksPositions) : renderer(_renderer), player(_player), 
+	name(_name), rowCount(_rowCount), columnCount(_columnCount), rowSpacing(_rowSpacing), columnSpacing(_columnSpacing), backgroundTexturePath(_backgroundTexturePath), 
+	backgroundMusicPath(_backgroundMusicPath), bricks(_bricks), bricksLayout(_bricksLayout), bricksWidthFactor(_bricksWidthFactor), bricksHeightFactor(_bricksHeightFactor),
+	bricksPositions(_bricksPositions)
+{
+	// Initialize ball for the level
+	ball = new Ball(renderer);
+
+	// Initialize pause menu
+	pauseMenu = new Menu<Level>(nonRetryablePauseMenuButtons, renderer, nonRetryablePauseMenuRequests, this);
+	// Initialize lose end level menu
+	loseEndLevelMenu = new Menu<Level>(nonRetryableLoseEndLevelMenuButtons, renderer, nonRetryableLoseEndLevelMenuRequests, this);
+	// Initialize win end level menu
+	winEndLevelMenu = new Menu<Level>(winEndLevelMenuButtons, renderer, winEndLevelMenuRequests, this);
+}
+
 Level::~Level()
 {
 	// Delete the bricks

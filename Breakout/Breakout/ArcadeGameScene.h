@@ -1,13 +1,9 @@
 #pragma once
 #include "GameScene.h"
+#include "LevelGenerator.h"
 class ArcadeGameScene : public GameScene
 {
 public:
-
-	enum class ArcadeState
-	{
-	};
-
 	ArcadeGameScene(SDL_Renderer* _renderer);
 	~ArcadeGameScene();
 	/// <summary>
@@ -23,5 +19,8 @@ public:
 	/// </summary>
 	bool loadMedia();
 private:
+	Player* player;
+	LevelGenerator* levelGenerator;
+	Level* level;
 };
 
