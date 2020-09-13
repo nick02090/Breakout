@@ -3,7 +3,7 @@
 	ColumnCount="15"
 	RowSpacing="3"
 	ColumnSpacing="3"
-	BackgroundTexture="Textures/Background/ChapterI.png"
+	BackgroundTexture="Textures/Background/ChapterIII.png"
 	Soundtrack="Audio/Soundtracks/bensound-sexy.mp3">
 	<BrickTypes>
 		<!-- Soft Brick -->
