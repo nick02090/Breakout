@@ -11,15 +11,21 @@ public:
 	/// <returns></returns>
 	Level* generate(Player* player);
 private:
-	const std::string LevelNames[3] = {
+	const std::string LevelNames[6] = {
 		"Bricks",
 		"Prison",
-		"Stars"
+		"Stars",
+		"Meadow",
+		"Room",
+		"Golden"
 	};
-	const std::string BackgroundTexturesPath[3] = {
+	const std::string BackgroundTexturesPath[6] = {
 		"Textures/Randoms/Bricks.png",
 		"Textures/Randoms/Prison.png",
-		"Textures/Randoms/Stars.png"
+		"Textures/Randoms/Stars.png",
+		"Textures/Randoms/Meadow.png",
+		"Textures/Randoms/Room.png",
+		"Textures/Randoms/Golden.png"
 	};
 	const std::string BackgroundMusicPath[8] = {
 		"Audio/Soundtracks/bensound-allthat.mp3",

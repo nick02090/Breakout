@@ -31,7 +31,7 @@ Level* LevelGenerator::generate(Player* player)
     // New seed
     srand((unsigned int)time(NULL));
     // Random texture and soundtrack
-    int randomTextureIndex = rand() % 3;
+    int randomTextureIndex = rand() % 6;
     std::string backroundTexturePath = BackgroundTexturesPath[randomTextureIndex];
     int randomMusicIndex = rand() % 8;
     std::string backgroundMusicPath = BackgroundMusicPath[randomMusicIndex];
