@@ -17,7 +17,7 @@ void Player::render(float _widthFactor, float _heightFactor)
 	RectangleGameObject::render(_widthFactor, _heightFactor);
 
 	// Update velocity
-	velocity = util::clamp(velocity - 0.5f, 0.f, MaxVelocity);
+	velocity = util::clamp(velocity - 0.15f, 0.f, MaxVelocity);
 }
 
 void Player::addToScore(int value)
@@ -64,6 +64,7 @@ void Player::increaseAcceleration(bool isNegativeXAxis)
 	if ((velocityMultiplier < 0 && !isNegativeXAxis) || (velocityMultiplier > 0 && isNegativeXAxis))
 	{
 		acceleration = 0.f;
+		velocity = 0.f;
 	}
 
 
@@ -75,7 +76,7 @@ void Player::increaseAcceleration(bool isNegativeXAxis)
 	{
 		velocityMultiplier = 1.f;
 	}
-	acceleration += 0.2f;
+	acceleration += 0.15f;
 }
 
 float Player::getVelocity()
