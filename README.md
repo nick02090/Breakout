@@ -41,4 +41,6 @@ My implementation of an arcade game Breakout.
 - Special thanks to HattyMikune (https://www.youtube.com/c/HattyMikune/) and ToxicDevil (https://www.youtube.com/user/ToxicDevil93) for letting me use their font.
 
 ## Release
-- Download executable file from here:  (Windows only) 
+- Download executable file from here: https://drive.google.com/file/d/11e1QdO4dmn6y_fRUL08ZF957i3r8RxzG/view?usp=sharing (Windows only)
+  1) Unzip the Breakout folder
+  2) Run Breakout.exe
