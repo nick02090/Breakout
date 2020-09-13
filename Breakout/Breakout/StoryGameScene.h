@@ -74,6 +74,7 @@ private:
 
 	Level* currentLevel;
 	Player* player;
+	util::SaveData saveData;
 
 	Menu<StoryGameScene>* narrationMenu;
 	Menu<StoryGameScene>::MenuRequest narrationMenuRequests[1] = { &StoryGameScene::ok };

@@ -118,6 +118,9 @@ bool StoryGameScene::loadMedia()
 	// Load media for narration menu
 	narrationMenu->loadMedia();
 
+	// Load save data
+	saveData = util::loadSaveData();
+
 	return success;
 }
 
@@ -143,6 +146,12 @@ void StoryGameScene::levelHandleInput(SDL_Event* e)
 		currentChapterLine = chapters[currentChapterIndex]->getNextLine();
 		// Show menu
 		narrationMenu->show();
+		// Check if player has gotten a new high score
+		if (player->getCurrentScore() > saveData.highScore)
+		{
+			saveData.highScore = player->getCurrentScore();
+			util::saveSaveData(saveData);
+		}
 	}
 	// Check if level requested to quit the whole game
 	if (currentLevel->hasRequestedQuit())
@@ -207,6 +216,9 @@ void StoryGameScene::ok()
 		currentChapterIndex += 1;
 		if (currentChapterIndex == 3)
 		{
+			// Save players progress
+			saveData.isStoryFinished = true;
+			util::saveSaveData(saveData);
 			// Finished all of the chapters, return to the MainMenu
 			nextGameState = GameState::MainMenu;
 		}

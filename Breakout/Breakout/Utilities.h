@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
+#include "tinyxml2.h"
 namespace util
 {
 	// Game constants
@@ -16,6 +17,43 @@ namespace util
 		float x;
 		float y;
 	};
+
+	struct SaveData
+	{
+		bool isStoryFinished;
+		int highScore;
+	};
+
+	static SaveData loadSaveData()
+	{
+		// Initialize member variables via xmlDocument
+		tinyxml2::XMLDocument doc;
+		tinyxml2::XMLError eResult = doc.LoadFile("Save/SaveData.xml");
+		SaveData saveData = {false, 0};
+		if (eResult == tinyxml2::XML_SUCCESS)
+		{
+			// Get SaveData node and it's attributes
+			tinyxml2::XMLNode* saveDataNode = doc.FirstChild();
+			tinyxml2::XMLElement* saveDataElement = saveDataNode->ToElement();
+			saveData.isStoryFinished = saveDataElement->FindAttribute("FinishedStory")->BoolValue();
+			saveData.highScore = saveDataElement->FindAttribute("HighScore")->IntValue();
+		} 
+		else 
+		{
+			std::cout << "Unable to load XML file Save/SaveData.xml" << std::endl;
+		}
+		return saveData;
+	}
+
+	static void saveSaveData(SaveData saveData)
+	{
+		tinyxml2::XMLDocument doc;
+		tinyxml2::XMLElement* saveDataElement = doc.NewElement("SaveData");
+		saveDataElement->SetAttribute("FinishedStory", saveData.isStoryFinished);
+		saveDataElement->SetAttribute("HighScore", saveData.highScore);
+		doc.LinkEndChild(saveDataElement);
+		doc.SaveFile("Save/SaveData.xml");
+	}
 
 	/// <summary>
 	/// Determines whether the given position is within the screen range.

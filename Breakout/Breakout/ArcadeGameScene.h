@@ -22,5 +22,6 @@ private:
 	Player* player;
 	LevelGenerator* levelGenerator;
 	Level* level;
+	util::SaveData saveData;
 };
 

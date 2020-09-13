@@ -62,5 +62,7 @@ private:
 
 	SDL_Texture* backgroundTexture;
 	Mix_Music* backgroundMusic;
+	util::SaveData saveData;
+	TTF_Font* font;
 };
 

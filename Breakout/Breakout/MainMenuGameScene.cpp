@@ -13,6 +13,9 @@ MainMenuGameScene::MainMenuGameScene(SDL_Renderer* _renderer) : GameScene(_rende
 
 	// Initialize music
 	backgroundMusic = NULL;
+
+	// Initialize font 
+	font = NULL;
 }
 
 MainMenuGameScene::~MainMenuGameScene()
@@ -21,9 +24,13 @@ MainMenuGameScene::~MainMenuGameScene()
 	SDL_DestroyTexture(backgroundTexture);
 	backgroundTexture = NULL;
 
-	//Free the music
+	// Free the music
 	Mix_FreeMusic(backgroundMusic);
 	backgroundMusic = NULL;
+
+	// Free loaded font
+	TTF_CloseFont(font);
+	font = NULL;
 
 	// Delete menus
 	currentMenu = NULL;
@@ -49,6 +56,11 @@ void MainMenuGameScene::update(float deltaTime)
 
 	// Render background texture to screen
 	SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+
+	// Render high score
+	SDL_Color whiteColor = { 250, 250, 250 };
+	util::drawText(renderer, font, whiteColor, "High Score:", { 15.f, 40.f }, util::ParagraphFontSize);
+	util::drawText(renderer, font, whiteColor, std::to_string(saveData.highScore).c_str(), { 15.f, 80.f }, util::ParagraphFontSize);
 
 	// Render menus
 	firstMenu->update(deltaTime);
@@ -79,15 +91,7 @@ bool MainMenuGameScene::loadMedia()
 	// Loading success flag
 	bool success = true;
 
-	// Load MainMenu background
-	backgroundTexture = util::loadTexture(renderer, "Textures/Background/MainMenu.png");
-	if (backgroundTexture == NULL)
-	{
-		std::cout << "Failed to load texture image!" << std::endl;
-		success = false;
-	}
-
-	//Load MainMenu background music
+	// Load MainMenu background music
 	backgroundMusic = Mix_LoadMUS("Audio/Soundtracks/bensound-hipjazz.mp3");
 	if (backgroundMusic == NULL)
 	{
@@ -95,9 +99,34 @@ bool MainMenuGameScene::loadMedia()
 		success = false;
 	}
 
+	// Load the font
+	font = TTF_OpenFont("UI/Fonts/p5hatty.ttf", util::HeadingFontSize);
+	if (font == NULL)
+	{
+		std::cout << "Failed to load font! SDL_Error: " << TTF_GetError() << std::endl;
+	}
+
 	// Load media for the menus
 	firstMenu->loadMedia();
 	secondMenu->loadMedia();
+
+	// Load save data
+	saveData = util::loadSaveData();
+
+	// Load another background texture if a player has win the game
+	std::string backgroundTexturePath = "Textures/Background/MainMenu.png";
+	if (saveData.isStoryFinished)
+	{
+		backgroundTexturePath = "Textures/Background/WinMainMenu.png";
+	}
+
+	// Load MainMenu background
+	backgroundTexture = util::loadTexture(renderer, backgroundTexturePath);
+	if (backgroundTexture == NULL)
+	{
+		std::cout << "Failed to load texture image!" << std::endl;
+		success = false;
+	}
 
 	return success;
 }
